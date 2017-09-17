@@ -13,29 +13,33 @@
       </counter>
       <counter>
         <item-type type-id="class" type="UmlClass" />
-        <value>3</value>
+        <value>5</value>
       </counter>
     </entity-names>
     <entity-ids>
-      <counter>
-        <item-type type-id="" type="AbstractElementGroup" />
-        <value>4</value>
-      </counter>
       <counter>
         <item-type type-id="package" type="UmlPackage" />
         <value>3</value>
       </counter>
       <counter>
-        <item-type type-id="" type="UniversalConnector" />
-        <value>2</value>
-      </counter>
-      <counter>
         <item-type type-id="class" type="UmlClass" />
-        <value>4</value>
+        <value>6</value>
       </counter>
       <counter>
         <item-type type-id="relationship" type="UmlAssociation" />
         <value>2</value>
+      </counter>
+      <counter>
+        <item-type type-id="shape" type="AbstractShapeItem" />
+        <value>3</value>
+      </counter>
+      <counter>
+        <item-type type-id="text" type="AbstractTextItem" />
+        <value>6</value>
+      </counter>
+      <counter>
+        <item-type type-id="" type="AbstractElementGroup" />
+        <value>10</value>
       </counter>
     </entity-ids>
     <diagrams>
@@ -47,7 +51,11 @@
     <fields>
       <counter>
         <type>SoftwareIdeasModeler.Core.DiagramItems.Fields.AttributeField</type>
-        <value>16</value>
+        <value>30</value>
+      </counter>
+      <counter>
+        <type>SoftwareIdeasModeler.Core.DiagramItems.Fields.OperationField</type>
+        <value>29</value>
       </counter>
     </fields>
   </counters>
@@ -93,7 +101,7 @@
       </meta>
       <abstract-items />
       <sub-models />
-      <diagram type="uml-class" id="p97bd95723fcf4e24a6032427cda8c976_796070108" name="ClassDiagram1" order-index="1" show-id="false" show-name="true" show-parent-name="false" show-stereotypes="true" show-tagged-values="false" show-template-parameters="true" show-fields="true" show-empty-compartments="true" show-special-indicators="false" show-attributes="true" show-attribute-visibility="true" show-operations="true" show-operation-parameters="true" show-operation-visibility="true" show-nullability="true" show-sequence-number="false" show-extension-points="false" show-relationship-texts="true" show-description="false" show-field-description="false" auto-routed-paths="false" view-location="0,52">
+      <diagram type="uml-class" id="p97bd95723fcf4e24a6032427cda8c976_796070108" name="ClassDiagram1" order-index="1" show-id="false" show-name="true" show-parent-name="false" show-stereotypes="true" show-tagged-values="false" show-template-parameters="true" show-fields="true" show-empty-compartments="true" show-special-indicators="false" show-attributes="true" show-attribute-visibility="true" show-operations="true" show-operation-parameters="true" show-operation-visibility="true" show-nullability="true" show-sequence-number="false" show-extension-points="false" show-relationship-texts="true" show-description="false" show-field-description="false" auto-routed-paths="false" view-location="0,39">
         <style>
           <background-color index="1" color="#FFFFFFFF" />
           <background-color index="2" color="#FFFFFFFF" />
@@ -105,7 +113,7 @@
           </authors>
           <description />
           <creation-date>09/16/2017 12:37:24</creation-date>
-          <change-date>09/16/2017 19:34:28</change-date>
+          <change-date>09/17/2017 02:50:07</change-date>
           <revision-count>0</revision-count>
           <version />
         </meta>
@@ -151,6 +159,9 @@
               <attribute id="a23a5576590f145c7b235e641d493e63f258" cid="ELEM010" name="timestamp_added" type="" type-id="" visibility="private">
                 <style class="default" />
               </attribute>
+              <attribute id="a167cfa5b0bcf40f7a303f9aa13c9950a423" cid="ELEM029" name="description" type="" type-id="" visibility="private">
+                <style class="default" />
+              </attribute>
             </attributes>
           </item>
           <item id="di726890327331953261" cid="C003" type="class" name="User" style-class="" owner="di275649234778601882" visibility="package" change-tracking-state="added" creator="Pc83b72f445ee4303a72d788603f54ef5" creation-date="09/16/2017 12:39:15">
@@ -159,7 +170,7 @@
               <attribute id="a91bd661d90a24dfca83a3fc38a598a71533" cid="ELEM011" name="fname" type="" type-id="" visibility="private">
                 <style class="default" />
               </attribute>
-              <attribute id="a24a6c3e8d9864f98986cbae9e626a9cc883" cid="ELEM012" name="sname" type="" type-id="" visibility="private">
+              <attribute id="a24a6c3e8d9864f98986cbae9e626a9cc883" cid="ELEM012" name="oname" type="" type-id="" visibility="private">
                 <style class="default" />
               </attribute>
               <attribute id="a0c0c11c8d912476ea45bcbe278d81f5f582" cid="ELEM013" name="username" type="" type-id="" visibility="private">
@@ -173,10 +184,73 @@
               </attribute>
             </attributes>
           </item>
+          <item id="di315731213539882964" cid="C004" type="class" name="basket" style-class="" owner="di275649234778601882" visibility="package" change-tracking-state="added" creation-date="09/17/2017 02:47:14">
+            <style class="default" />
+            <attributes>
+              <attribute id="aaa0e897a0f2e4d28a21436fbedbd224a594" cid="ELEM016" name="shopping_list" type="" type-id="" visibility="private">
+                <style class="default" />
+              </attribute>
+            </attributes>
+            <operations>
+              <operation id="o742c1aac089a4e74b82c398c55ca2199762" cid="ELEM017" name="create_list" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o26e681274df14ada822b2eb95869984c360" cid="ELEM018" name="modify_list" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o246e039575834c3c876e77467018a247483" cid="ELEM019" name="delete_list" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o57dd6e9bfc5e4ec5a3118210f2af624a821" cid="ELEM020" name="view_list" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o7c95219bf5f4459c89c167ab735a0d7369" cid="ELEM021" name="add_item" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o0308828489344ae7b08219f5f65988eb588" cid="ELEM022" name="modify_item" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o769dac738803461a8c6fe1fbbebe35c0407" cid="ELEM023" name="delete_item" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o6bf663f63b1a4b41a5b9623e6b7ffa27260" cid="ELEM024" name="view_item" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+            </operations>
+          </item>
+          <item id="di131513622165071833" cid="C005" type="class" name="Gears" style-class="" owner="di275649234778601882" visibility="package" change-tracking-state="added" creation-date="09/17/2017 02:50:07">
+            <style class="default" />
+            <operations>
+              <operation id="ob5604a5d60a14fa691deaa9e51a532cd438" cid="ELEM025" name="log in" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o3963980c674040f68c91a0a8140c4501639" cid="ELEM026" name="register" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="oda1723b66dd442508d420d6441177f87466" cid="ELEM027" name="reset_password" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+              <operation id="o02e5136ccf1d41c89630b8d1866b246441" cid="ELEM028" name="log out" type="" type-id="" visibility="public">
+                <style class="default" />
+              </operation>
+            </operations>
+          </item>
+          <item id="di580278382159543906" cid="ELEM001" type="shape" name="Element1" style-class="" visibility="package" creation-date="09/17/2017 15:56:02">
+            <style class="default" />
+          </item>
+          <item id="di983908332643494814" cid="ELEM002" type="text" name="Element3" style-class="" visibility="package" creation-date="09/17/2017 15:56:02">
+            <style class="default" />
+          </item>
+          <item id="di177753210541924262" cid="ELEM003" type="text" name="Element4" style-class="" visibility="package" creation-date="09/17/2017 15:56:02">
+            <style class="default" />
+          </item>
+          <item id="di460453079235826885" cid="ELEM004" type="text" name="Element5" style-class="" visibility="package" creation-date="09/17/2017 15:56:02">
+            <style class="default" />
+          </item>
         </abstract-items>
         <layer name="Default" visible="true" enabled="true" locked="false">
           <item id="di275649234778601882" iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/16/2017 12:38:15" order-index="0" type="entity">
-            <layout ax="46" ay="66" awidth="994" aheight="417" x="46" y="66" width="994" height="417" />
+            <layout ax="46" ay="66" awidth="994" aheight="642" x="46" y="66" width="994" height="642" />
           </item>
           <item id="di908239100271550305" iid="6c81c3c126e7439599ca47ad24ac1a75" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/16/2017 12:38:57" order-index="1" type="entity">
             <layout ax="105" ay="140" awidth="140" aheight="160" x="105" y="140" width="140" height="160" />
@@ -188,6 +262,38 @@
           </item>
           <item id="di726890327331953261" iid="499afb67e303408c8b1ceab268e15b72" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/16/2017 12:39:15" order-index="3" type="entity">
             <layout ax="693" ay="140" awidth="140" aheight="160" x="693" y="140" width="140" height="160" />
+            <class />
+          </item>
+          <item id="di580278382159543906" iid="f0cba90b8bf24edaa460ded1ca4df77c" name="Element1" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/17/2017 02:44:58" order-index="4" type="drawing-line">
+            <layout ax="245" ay="148" awidth="156" aheight="3" x="245" y="148" width="156" height="3" />
+            <drawing-line start-point="245,150" end-point="400,148" />
+            <style class="default" />
+          </item>
+          <item id="di983908332643494814" iid="c83d1cf67131446b8ca082d04b6b2eae" name="Element3" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/17/2017 02:45:43" order-index="5" type="drawing-text">
+            <layout ax="215" ay="108" awidth="85" aheight="40" x="215" y="108" width="85" height="40" />
+            <drawing-text>
+              <text>1</text>
+            </drawing-text>
+            <style class="default" />
+          </item>
+          <item id="di177753210541924262" iid="77e88a15611b42d0b99240313d7fd40c" name="Element4" creation-date="09/17/2017 02:46:28" order-index="6" type="drawing-text">
+            <layout ax="300" ay="49" awidth="140" aheight="160" x="300" y="49" width="140" height="160" />
+            <drawing-text />
+            <style class="default" />
+          </item>
+          <item id="di460453079235826885" iid="b24d000cf02e44438b18d1b3d2655414" name="Element5" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/17/2017 02:46:30" order-index="7" type="drawing-text">
+            <layout ax="369" ay="109" awidth="45" aheight="40" x="369" y="109" width="45" height="40" />
+            <drawing-text>
+              <text>N</text>
+            </drawing-text>
+            <style class="default" />
+          </item>
+          <item id="di315731213539882964" iid="b4d9ce42cd344b2d876736ce48cf217b" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/17/2017 02:47:14" order-index="8" type="entity">
+            <layout ax="105" ay="355" awidth="140" aheight="202" x="105" y="355" width="140" height="202" />
+            <class />
+          </item>
+          <item id="di131513622165071833" iid="5ee93dab5e4a473280090331a41c0060" container="di275649234778601882" container-iid="1eb7233600194cfe8636c14ea1c96f8a" creation-date="09/17/2017 02:50:07" order-index="9" type="entity">
+            <layout ax="369" ay="364" awidth="140" aheight="172" x="369" y="364" width="140" height="172" />
             <class />
           </item>
         </layer>
