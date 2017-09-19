@@ -33,10 +33,10 @@ body{
     text-decoration: None;
     color: black;
 }
-.unlink .panel:hover {
-    box-shadow: 5px 5px 5px gray;
+.panel:hover {
+    box-shadow: 5px 10px 5px #222;
 }
-.unlink .panel .panel-heading:hover{
+.panel .panel-heading:hover{
     text-decoration: underline;
     font-weight: bold;
 }
@@ -48,4 +48,10 @@ body{
 .text{
     color: black;
 }
+.terms-link.jumbotron{
+    background-color: #eee;
+    padding: 5px;
+
+}
+
 
