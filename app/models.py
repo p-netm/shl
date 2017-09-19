@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class User(object):
     """ creates an instance of a user object """
 
-    user_list = list()  # holds the user objects
+    user_list = []  # holds the user objects
 
     def __init__(self, first_name, other_names, user_name, email, password):
         if isinstance(first_name, str):
@@ -39,7 +39,7 @@ class ShoppingList(object):
         author = self.get_author()
         date_created = time.time()
         date_last_modified = time.time()
-        items = list()
+        items = []
 
     def get_author(self):
         """ this function retrieves the username of the currently logged in user"""
@@ -94,7 +94,7 @@ class Gears(object):
 class Basket(object):
     """ toolbox with the tools for manipulating the shopping lists and the items on it"""
 
-    shopping_list = list()
+    shopping_list = []
 
     def __init(self):
         pass
