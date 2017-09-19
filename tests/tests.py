@@ -28,3 +28,4 @@ class ShoppingListTests(unittest.TestCase):
         self.assertTrue(current_value)
         self.assertEqual(current_value - initial_value, 1,
                          msg="there should be one user object in the shopping_list")
+
