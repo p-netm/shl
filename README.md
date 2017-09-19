@@ -1,13 +1,13 @@
 # shl
-a shopping list web based application that allows users to create , track their shopping needs as well as share their shopping lists with others
+[![Build Status](https://travis-ci.org/p-netm/shl.svg?branch=challenge2)](https://travis-ci.org/p-netm/shl)
+[![Coverage Status](https://coveralls.io/repos/github/p-netm/shl/badge.svg?branch=master)](https://coveralls.io/github/p-netm/shl?branch=master)
 
-##### first design iteration:
+ > a shopping list web based application that allows users to create , track their shopping needs as well as share their
+  shopping lists with others
+
+## Interface:
 
 ###### the home page
-![home](https://user-images.githubusercontent.com/28119869/30535852-5a67c0b8-9c6c-11e7-90b1-b97dab27607b.png)
+![index](https://user-images.githubusercontent.com/28119869/30607767-cf8cc600-9d7e-11e7-9b25-844e97275227.png)
 
-###### the registration page
-![register](https://user-images.githubusercontent.com/28119869/30535853-5ad9343c-9c6c-11e7-8d53-d3c350c932ea.png)
-
-###### login
-![log in](https://user-images.githubusercontent.com/28119869/30535854-5adfc626-9c6c-11e7-9be6-682efbc0794b.png)
+# Installation
