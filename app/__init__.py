@@ -7,7 +7,6 @@ from shl.app.main import shl
 from flask_login import LoginManager
 from shl.app.auth import auth
 
-
 login_manager = LoginManager()
 mail = Mail()
 moment = Moment()
@@ -33,7 +32,3 @@ def create_app(configuration_name='default'):
     app.register_blueprint(auth)
 
     return app
-
-
-from shl.app.main import views, errors, forms
-from shl.app.auth import views, forms

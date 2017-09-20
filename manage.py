@@ -7,6 +7,7 @@ import os
 app = create_app(os.getenv('COFIGURATION'))
 manager = Manager(app=app)
 
+
 @manager.shell
 def make_shell_context():
     return dict(app=app, User=User, ShoppingList=ShoppingList)
