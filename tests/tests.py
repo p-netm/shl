@@ -79,6 +79,26 @@ class ShoppingListTests(unittest.TestCase):
 
         self.assertListEqual(check_lists, golden_lists, msg="Lists not ordered")
 
+    def test_basket_supporting_methods(self):
+        """tests the methods that are called within the main class methods
+        what i would call supporting methods-> contain delegated functionality"""
+        # test name_checker
+        self.basket.create_list('5')
+        self.assertTrue(self.basket.name_checker('5'))
+        self.assertFalse(self.basket.name_checker('another_list'))
+
+        # get_list_by_name
+        self.basket.create_list('3')
+        response_list = self.basket.get_list_by_name('3')
+        self.assertTrue(response_list)
+        self.assertTrue(type(response_list) == ShoppingList)
+        self.assertTrue(response_list.name == '3')
+        with self.raises(ValueError):
+            response_list = self.basket.get_list_by_name('error')
+
+
+
+
 
 class UserTests(unittest.TestCase):
     """ Concerned with user operations and attributes"""
@@ -108,7 +128,7 @@ class UserTests(unittest.TestCase):
 
     def test_if_one_can_create_user_with_same_email(self):
         """ register 2 users with the same email and check for and exception"""
-        with self
+
 
 
 
