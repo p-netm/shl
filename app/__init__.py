@@ -6,8 +6,7 @@ from shl.config import config
 from shl.app.main import shl
 from flask_login import LoginManager
 from shl.app.auth import auth
-from flask_script import Manager, Shell
-from shl.app.models import User, ShoppingList
+
 
 login_manager = LoginManager()
 mail = Mail()
@@ -35,11 +34,6 @@ def create_app(configuration_name='default'):
 
     return app
 
-manager = Manager()
-
-@manager.shell
-def make_shell_context():
-    return dict(app=create_app(os.getenv('COFIGURATION')), User=User, ShoppingList=ShoppingList)
 
 from shl.app.main import views, errors, forms
 from shl.app.auth import views, forms
