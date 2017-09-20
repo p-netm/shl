@@ -1,6 +1,6 @@
 __author__ = 'Sudo Pnet'
 import unittest
-from shl.app.models import Basket, ShoppingList, User
+from shl.app.models import Basket, ShoppingList, User, Item
 
 
 class ShoppingListTests(unittest.TestCase):
@@ -20,7 +20,6 @@ class ShoppingListTests(unittest.TestCase):
         self.assertTrue(new_list.date_last_modified)
         self.assertFalse(len(new_list.items))
 
-
     def test_if_shopping_list_constructor_has_error_checking(self):
         """ Test: create list with arguments being the wrong-type"""
         with self.assertRaises(ValueError) as context:
@@ -31,8 +30,8 @@ class ShoppingListTests(unittest.TestCase):
         """ test to see if the create list preserves a list object after instantiation."""
         initial_value = len(self.basket.shopping_lists)
         self.assertFalse(initial_value)
-        bool = self.basket.create_list('First list')
-        self.assertTrue(bool)
+        boolean = self.basket.create_list('First list')
+        self.assertTrue(boolean)
         current_value = len(self.basket.shopping_lists)
         self.assertTrue(current_value)
         self.assertEqual(current_value - initial_value, 1,
@@ -40,7 +39,6 @@ class ShoppingListTests(unittest.TestCase):
 
     def test_repeat_shopping_list_name(self):
         """ tests if a user can create two lists with the same name"""
-        initial_value = len(self.basket.shopping_lists)
         self.basket.create_list('My_list')
         response = self.basket.create_list('My_list')
         self.assertFalse(response)
@@ -93,11 +91,8 @@ class ShoppingListTests(unittest.TestCase):
         self.assertTrue(response_list)
         self.assertTrue(type(response_list) == ShoppingList)
         self.assertTrue(response_list.name == '3')
-        with self.raises(ValueError):
+        with self.assertRaises(ValueError):
             response_list = self.basket.get_list_by_name('error')
-
-
-
 
 
 class UserTests(unittest.TestCase):
@@ -130,5 +125,33 @@ class UserTests(unittest.TestCase):
         """ register 2 users with the same email and check for and exception"""
 
 
+class ItemTest(unittest.TestCase):
+    """ tests item, creation, modification an deletion functionality"""
 
+    def setUp(self):
+        """setup commands to run before each test"""
+        self.basket = Basket()
+        self.list1 = ShoppingList('list1')
+        self.list2 = ShoppingList('list2')
+        self.basket.shopping_lists.extend([self.list1, self.list2])
+
+    def tearDown(self):
+        """ cleans up after the preceding set up"""
+
+    def test_item_creation(self):
+        """checks to see if the automatically set properties are created"""
+        item1 = Item('item', '20', 23.00, 'OF no importance')
+        self.assertTrue(item1.author)
+        self.assertTrue(item1.date_added)
+        self.assertTrue(item1.date_last_modified)
+
+    def test_item_creation_with_wrong_arguments(self):
+        """" checks for data validation in item constructor"""
+        with self.assertRaises(ValueError):
+            Item(30, 2, '23.00', {})
+
+    def test_basket_add_item_function(self):
+        """Check for data validation, created items are added to correct list"""
+        self.basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
+        self.assertEqual(len(self.basket.shopping_lists.items), 1)
 
