@@ -6,9 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class User(object):
     """ creates an instance of a user object """
 
-    user_list = []  # holds the user objects
-
-    def __init__(self, first_name, other_names, user_name, email, password):
+    def __init__(self, first_name, other_names, user_name, email):
         if isinstance(first_name, str):
             f_name = first_name
         else:
@@ -21,10 +19,24 @@ class User(object):
         o_name = other_names
         user_name = user_name
         email = email
-        password = password
+        hashed_pass = None
+
+    @property
+    def password(self, password):
+        """ raises an attribute error for the format: User.password"""
+        pass
+
+    @password.setter
+    def set_password(self, password):
+        """uses werkzeug hashing functions to hash the password """
+        self.hashed_pass = generate_password_hash(password)
+
+    def check_password(self, password):
+        """ returns True if fed in password has the same hash as the users password else Fasle"""
 
     def add_to_list(self, user_object):
         """ adds a created user object to the user_list"""
+        pass
 
 
 class ShoppingList(object):
@@ -49,12 +61,13 @@ class ShoppingList(object):
 class Item(object):
     """ creates instance of items to be added to the item list in the shopping list object"""
 
-    def __init__(self, name, quantity, price, description=None ):
+    def __init__(self, name, quantity, price, description=None):
         name = name
         quantity = quantity
         price = price
         author = self.get_author()
-        time_added = time.time()
+        date_added = time.time()
+        date_last_modified = time.time()
         description = description
 
     def get_author(self):
@@ -64,6 +77,8 @@ class Item(object):
 
 class Gears(object):
     """ more of a toolbox : contains methods that will assist in the data persistent tasks"""
+
+    user_list = []  # holds the user objects
 
     def __init__(self):
         pass
@@ -94,7 +109,7 @@ class Gears(object):
 class Basket(object):
     """ toolbox with the tools for manipulating the shopping lists and the items on it"""
 
-    shopping_list = []
+    shopping_lists = []
 
     def __init(self):
         pass
@@ -102,10 +117,13 @@ class Basket(object):
     def create_list(self, name):
         """ input: a shopping-list name
         calls the shopping list constructor
-        output: Boolean"""
-        list_obj = ShoppingList(name)
-        self.shopping_list.append(list_obj)
-        return True
+        output: updated shopping_list else false"""
+        if isinstance(name, str) or type(name) == int:
+            list_obj = ShoppingList(name)
+        else:
+            raise ValueError('A list name can only contain alpha numeric characters')
+        self.shopping_lists.append(list_obj)
+        return self.shopping_lists
 
     def modify_list(self, name, **kwargs):
         """input: name of list and the arguments to be changed
@@ -117,7 +135,7 @@ class Basket(object):
         from the system then return Boolean"""
         pass
 
-    def view_list(self, sort):
+    def view_list(self, sort='date_added'):
         """ returns all the list sorted as per certain list attributes
         """
         pass
