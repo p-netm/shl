@@ -120,7 +120,7 @@ class Basket(object):
             list_obj = ShoppingList(name)
         else:
             raise ValueError('A list name can only contain alpha numeric characters')
-        #we cant force a format style on users, but yet they should not be able to add lists with the same name
+        # we cant force a format style on users, but yet they should not be able to add lists with the same name
         name = name.strip()
         if self.name_checker(name):
             self.shopping_lists.append(list_obj)
@@ -162,7 +162,7 @@ class Basket(object):
         """
         pass
 
-    def add_item(self, item_name, list_name):
+    def add_item(self, item_name, quantity, price, list_name, description=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
         and then adds the created item object to a list object with the fed in list_name
         output: the updated list"""
