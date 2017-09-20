@@ -1,6 +1,7 @@
 __author__ = 'Sudo Pnet'
 import time
 from werkzeug.security import check_password_hash, generate_password_hash
+from . import login_manager
 
 
 class User(object):
@@ -78,6 +79,15 @@ class Gears(object):
     user_list = []  # holds the user objects
 
     def __init__(self):
+        pass
+
+    @login_manager.user_loader
+    def load_user(email):
+        """Return the User object with the given email or else None"""
+        pass
+
+    def get_user_by_email(self, email):
+        """ gos through the users list and returns the user object with the given email"""
         pass
 
     def log_in(self, email, password):

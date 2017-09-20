@@ -1,15 +1,18 @@
 from flask import Flask
-import os
+from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
-from shl.config import config
-from shl.app.main import shl
-from flask_login import LoginManager
-from shl.app.auth import auth
+from config import config
+
+
 
 login_manager = LoginManager()
 mail = Mail()
 moment = Moment()
+
+
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'auth.login'
 
 
 def create_app(configuration_name='default'):
@@ -28,7 +31,9 @@ def create_app(configuration_name='default'):
     login_manager.init_app(app)
 
     # register the shl blueprint: comes alive with the application instance
+    from .main import shl
     app.register_blueprint(shl)
-    app.register_blueprint(auth)
+    from .auth import auth
+    app.register_blueprint(auth, url_prefix='/auth')
 
     return app

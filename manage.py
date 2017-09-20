@@ -1,10 +1,10 @@
 from flask_script import Manager, Shell
-from shl.app.models import User, ShoppingList
-from shl.app import create_app
+from app.models import User, ShoppingList
+from app import create_app
 import os
 
 
-app = create_app(os.getenv('COFIGURATION'))
+app = create_app('default')
 manager = Manager(app=app)
 
 
