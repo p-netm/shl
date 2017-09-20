@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class User(object):
     """ creates an instance of a user object """
 
-    def __init__(self, first_name, other_names, user_name, email):
+    def __init__(self, first_name, user_name, email, other_names=None):
         if isinstance(first_name, str):
             f_name = first_name
         else:
@@ -32,11 +32,8 @@ class User(object):
         self.hashed_pass = generate_password_hash(password)
 
     def check_password(self, password):
-        """ returns True if fed in password has the same hash as the users password else Fasle"""
-
-    def add_to_list(self, user_object):
-        """ adds a created user object to the user_list"""
-        pass
+        """ returns True if fed in password, has the same hash as the users password else False"""
+        return check_password_hash(self.hashed_pass, password=password)
 
 
 class ShoppingList(object):
@@ -54,7 +51,7 @@ class ShoppingList(object):
         items = []
 
     def get_author(self):
-        """ this function retrieves the username of the currently logged in user"""
+        """ this function retrieves the username(from session) of the currently logged in user"""
         pass
 
 
@@ -110,6 +107,7 @@ class Basket(object):
     """ toolbox with the tools for manipulating the shopping lists and the items on it"""
 
     shopping_lists = []
+    lists_name_set = {}
 
     def __init(self):
         pass
@@ -122,8 +120,19 @@ class Basket(object):
             list_obj = ShoppingList(name)
         else:
             raise ValueError('A list name can only contain alpha numeric characters')
-        self.shopping_lists.append(list_obj)
+        #we cant force a format style on users, but yet they should not be able to add lists with the same name
+        name = name.strip()
+        if self.name_checker(name):
+            self.shopping_lists.append(list_obj)
+            self.lists_name_set.add(list_obj.name.capitalize())
+        else:
+            raise ValueError('the name is already in use')
         return self.shopping_lists
+
+    def name_checker(self, name):
+        """input: list_name
+        returns true if the name is not already used for another list else False"""
+        return name.capitalize() not in self.lists_name_set
 
     def modify_list(self, name, **kwargs):
         """input: name of list and the arguments to be changed
@@ -132,8 +141,21 @@ class Basket(object):
 
     def delete_list(self, name):
         """ input: name of list: retrieves list object with the fed in name and pop it
-        from the system then return Boolean"""
-        pass
+        from the system then return updated shopping_lists"""
+        list_obj = self.get_list_by_name(name)
+        self.shopping_lists.pop(self.shopping_lists.index(list_obj))
+        return self.shopping_lists
+
+    def get_list_by_name(self, name):
+        """input: a list's name; returns the list object with the given name"""
+        if self.name_checker(name):
+            # return list_object ->  conundrum due to arbitrary use of different cases when a user feels like it
+            # we will check a capitalized copy of the name against capitalized versions of the lists names
+            for list_obj in self.shopping_lists:
+                if name.capitalize() == list_obj.name.capitalize():
+                    return list_obj
+        else:
+            raise ValueError('Shopping list with the name {} cannot be found'. format(name))
 
     def view_list(self, sort='date_added'):
         """ returns all the list sorted as per certain list attributes
