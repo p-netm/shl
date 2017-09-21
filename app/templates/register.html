@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Shopping-list.com Account creation</title>
-    <link rel="icon" href="media/favicon.ico">
+    <link rel="icon" type='image/x-icon' href="{{ url_for('static', filename='media/favicon.ico') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Latest compiled and minified CSS -->
@@ -16,7 +16,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- My custom css file-->
-    <link rel="stylesheet" href="style/css/shl.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css') }}">
 
 </head>
 <body>
@@ -31,7 +31,7 @@
                 <span class="icon-bar"></span>
             </button>
             <!--/review -->
-            <a class="navbar-brand" href="#">SHOPPING LIST.COM</a>
+            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
@@ -48,30 +48,27 @@
         <div class="row">
             <div class="col-lg-4 col-md-4 col-sm-3 "></div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <form class="">
+                <form class="" method="post">
                     <p>
 
                     <h3 class="text-capitalize text-center"> Sign Up</h3></p>
                     <div class="form-group">
-                        <input type="text" class="form-control" id="fname" placeholder="Full name">
+                        {{ form.name(class="form-control", placeholder="Full name") }}
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-control" id="username" placeholder="Username">
+                        {{ form.email(class='form-control', placeholder="Email") }}
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-control" id="email" placeholder="Email">
+                        {{ form.passcode(class="form-control", placeholder="Password") }}
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" id="password" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" class="form-control" id="Cpassword" placeholder="Confirm Password">
+                        {{ form.C_passcode(class='form-control', placeholder = "Confirm Password") }}
                     </div>
 
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-sm-3 "></div>
                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                            <button type="submit" class="btn login-btn">sign up</button>
+                            {{ form.sign_up(class = 'btn login-btn') }}
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-3 "></div>
                     </div>

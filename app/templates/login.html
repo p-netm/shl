@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>shopping-List.com login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="media/favicon.ico">
+    <link rel="icon" type='image/x-icon' href="{{ url_for('static', filename='media/favicon.ico') }}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -15,7 +15,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- My custom css file-->
-    <link rel="stylesheet" href="style/css/shl.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css') }}">
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -28,11 +28,11 @@
                 <span class="icon-bar"></span>
             </button>
             <!--/review -->
-            <a class="navbar-brand" href="#">SHOPPING LIST.COM</a>
+            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="register.html"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="{{ url_for('auth.register') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                 <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> Contact us</a></li>
                 <li><a href="#"><span class="glyphicon glyphicon-exclamation-sign"></span> About </a></li>
             </ul>
@@ -44,7 +44,7 @@
         <div class="row">
             <div class="col-lg-4 col-md-4 col-sm-3 "></div>
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                <form class="">
+                <form class="" method="post">
                     <p>
 
                     <h3 class="text-capitalize text-center"> Log in</h3></p>
