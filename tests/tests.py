@@ -1,13 +1,13 @@
 __author__ = 'Sudo Pnet'
 import unittest
-from shl.app.models import Basket, ShoppingList, User, Item
+from app.models import Basket, ShoppingList, User, Item
 
 
 class ShoppingListTests(unittest.TestCase):
 
     def setUp(self):
         """ instantiate common attributes for this class"""
-        self.basket = Basket()
+        pass
 
     def tearDown(self):
         """pretty straightforward, tears down attributes created in setUp()"""
@@ -15,109 +15,120 @@ class ShoppingListTests(unittest.TestCase):
 
     def test_shopping_list_auto_properties(self):
         """checks if the automatically set propeties are as they should be"""
+        basket = Basket()
         new_list = ShoppingList('Name')
         self.assertTrue(new_list.date_created)
         self.assertTrue(new_list.date_last_modified)
         self.assertFalse(len(new_list.items))
+        del basket
 
     def test_if_shopping_list_constructor_has_error_checking(self):
         """ Test: create list with arguments being the wrong-type"""
+        basket = Basket()
         with self.assertRaises(ValueError) as context:
-            self.basket.create_list({})
+            basket.create_list({})
             self.assertTrue('The shopping list name can only be a string or integer' in context.exception)
+        del basket
 
     def test_shopping_list_creates_and_adds_lists(self):
         """ test to see if the create list preserves a list object after instantiation."""
-        initial_value = len(self.basket.shopping_lists)
+        basket = Basket()
+        initial_value = len(basket.shopping_lists)
         self.assertFalse(initial_value)
-        boolean = self.basket.create_list('First list')
+        boolean = basket.create_list('First list')
         self.assertTrue(boolean)
-        current_value = len(self.basket.shopping_lists)
+        current_value = len(basket.shopping_lists)
         self.assertTrue(current_value)
         self.assertEqual(current_value - initial_value, 1,
                          msg="there should be one user object in the shopping_list")
+        del basket
 
     def test_repeat_shopping_list_name(self):
         """ tests if a user can create two lists with the same name"""
-        self.basket.create_list('My_list')
-        response = self.basket.create_list('My_list')
-        self.assertFalse(response)
-        self.assertTrue(len(self.basket.shopping_lists), 1,
+        basket = Basket()
+        basket.create_list('My_list')
+        with self.assertRaises(ValueError):
+            basket.create_list('My_list')
+        self.assertTrue(len(basket.shopping_lists) == 1,
                         msg='There should be only one list created')
+        del basket
 
     def test_delete_shopping_list(self):
         """ checks that a deleted list is no longer in the system"""
-        self.basket.create_list('1')
-        self.basket.create_list('2')
-        self.basket.create_list('3')
-        new_shopping_lists = self.basket.delete_list('2')
-        current_value = len(self.basket.shopping_lists)
+        basket = Basket()
+        basket.create_list('1')
+        basket.create_list('2')
+        basket.create_list('3')
+        new_shopping_lists = basket.delete_list('2')
+        current_value = len(basket.shopping_lists)
         self.assertTrue(current_value, 2)
         # create a list of the shopping_lists names and confirm the deleted list's name
         # is not in it
         list_names = []
-        for list_obj in self.basket.shopping_lists:
+        for list_obj in basket.shopping_lists:
             list_names.append(list_obj.name)
         self.assertNotIn('2', list_names,
-                         msg="How comes the delted list names still shows up")
+                         msg="How comes the deleted list names still shows up")
+        del basket
 
     def test_view_shopping_list(self):
         """ checks that the view list obeys the sorting order requested"""
-        self.basket.create_list('1')
-        self.basket.create_list('6')
-        self.basket.create_list('2')
-        self.basket.create_list('5')
-        self.basket.create_list('3')
+        basket = Basket()
+        basket.create_list('1')
+        basket.create_list('6')
+        basket.create_list('2')
+        basket.create_list('5')
+        basket.create_list('3')
 
-        new_shopping_lists = self.basket.view_list(sort='name')
+        new_shopping_lists = basket.view_list(sort='name')
+        print(len(new_shopping_lists))
         golden_lists = ['1', '2', '3', '5', '6']
         check_lists = []
         for list_obj in new_shopping_lists:
             check_lists.append(list_obj.name)
 
         self.assertListEqual(check_lists, golden_lists, msg="Lists not ordered")
+        del basket
 
-    def test_basket_supporting_methods(self):
+    def test_basket_support_methods(self):
         """tests the methods that are called within the main class methods
         what i would call supporting methods-> contain delegated functionality"""
+        basket = Basket()
         # test name_checker
-        self.basket.create_list('5')
-        self.assertTrue(self.basket.name_checker('5'))
-        self.assertFalse(self.basket.name_checker('another_list'))
+        basket.create_list('5')
+        self.assertFalse(basket.name_checker('5'))
+        self.assertTrue(basket.name_checker('another_list'))
 
         # get_list_by_name
-        self.basket.create_list('3')
-        response_list = self.basket.get_list_by_name('3')
+        basket.create_list('3')
+        response_list = basket.get_list_by_name('3')
         self.assertTrue(response_list)
         self.assertTrue(type(response_list) == ShoppingList)
         self.assertTrue(response_list.name == '3')
         with self.assertRaises(ValueError):
-            response_list = self.basket.get_list_by_name('error')
+            response_list = basket.get_list_by_name('error')
+        del basket
 
 
 class UserTests(unittest.TestCase):
     """ Concerned with user operations and attributes"""
 
     def setUp(self):
-        self.user1 = User('Dennis', 'Ngari', 'DNgari', 'DNgari@gmail.com')
-        self.user2 = User('Kevin', 'Nick', 'KNick', 'Nickson@hotmail.com')
+        self.user1 = User('Dennis Ngari', 'DNgari', 'DNgari@gmail.com')
+        self.user2 = User('Kevin Nick', 'KNick', 'Nickson@hotmail.com')
 
     def tearDown(self):
         pass
 
     def test_password_has_no_read_feature(self):
         """ checks to make sure the password cannot be retrieved through dot notation"""
-        self.assertEqual(self.user1.f_name, 'Dennis', msg="Retrieved wrong name")
-        self.assertEqual(self.user2.o_name, 'Nick', msg="Retrieved wrong name")
+        self.assertEqual(self.user1.name, 'Dennis Ngari', msg="Retrieved wrong name")
+        self.assertEqual(self.user2.name, 'Kevin Nick', msg="Retrieved wrong name")
         with self.assertRaises(AttributeError):
             self.user1.password
-
-        # checks that two users with the same password have different hashes
+        # test check_password function
         self.user1.set_password('sdsf')
         self.user2.set_password('sdsf')
-        self.assertFalse(self.user1.hashed_pass == self.user2.hashed_pass)
-
-        # test check_password function
         self.assertTrue(self.user1.check_password('sdsf'))
         self.assertFalse(self.user2.check_password('sdasfs'))
 
@@ -131,12 +142,12 @@ class ItemTest(unittest.TestCase):
     def setUp(self):
         """setup commands to run before each test"""
         self.basket = Basket()
-        self.list1 = ShoppingList('list1')
-        self.list2 = ShoppingList('list2')
-        self.basket.shopping_lists.extend([self.list1, self.list2])
+        self.basket.create_list('list1')
+        self.basket.create_list('list2')
 
     def tearDown(self):
         """ cleans up after the preceding set up"""
+        pass
 
     def test_item_creation(self):
         """checks to see if the automatically set properties are created"""
@@ -153,5 +164,5 @@ class ItemTest(unittest.TestCase):
     def test_basket_add_item_function(self):
         """Check for data validation, created items are added to correct list"""
         self.basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
-        self.assertEqual(len(self.basket.shopping_lists.items), 1)
-
+        list_ = self.basket.get_list_by_name('list1')
+        self.assertEqual(len(list_.items), 1)
