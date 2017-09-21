@@ -109,3 +109,5 @@ ENV/
 /.coveralls.yml
 /testit.py
 /.env
+/app/templates/testit2.html
+/app/templates/testit.html
