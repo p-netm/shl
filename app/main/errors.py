@@ -10,3 +10,8 @@ def page_not_found():
 @shl.app_errorhandler(500)
 def internal_issues():
     return render_template('500.html'), 500
+
+
+@shl.app_errorhandler(405)
+def method_not_allowed():
+    return render_template('405.html', 405)

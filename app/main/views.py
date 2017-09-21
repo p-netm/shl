@@ -12,7 +12,7 @@ basket = Basket()
 def index():
     # create list functionality
     lists = basket.view_list()  # lists has a list of list objects
-    return render_template('index.html', lists=basket.view_list())
+    return render_template('index.html', lists=lists, lists_len=len(lists))
 
 
 @shl.route('/add_list')
