@@ -2,9 +2,10 @@ __author__ = 'Sudo Pnet'
 import time
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import login_manager
+from flask_login import UserMixin
 
 
-class User(object):
+class User(UserMixin, object):
     """ creates an instance of a user object """
 
     def __init__(self, full_name, user_name, email):
@@ -13,12 +14,17 @@ class User(object):
 
         if not isinstance(full_name, str):
             raise ValueError("A person's names can only be strings")
-        if not str.isalnum(user_name):
-            raise ValueError('The User name can only contain alpha-numeric characters')
+        # if not str.isalnum(user_name):
+        #     raise ValueError('The User name can only contain alpha-numeric characters')
 
         self.user_name = user_name
         self.email = email
         self.hashed_pass = None
+
+    def get_id(self):
+        """return the unicode identifier"""
+        return self.user_name
+
 
     @property
     def password(self):
@@ -50,14 +56,11 @@ class ShoppingList(object):
         else:
             raise ValueError('The shopping list name can only be a string or integer')
 
-        self.author = self.get_author()
+        self.author = None
         self.date_created = time.time()
         self.date_last_modified = time.time()
         self.items = []
 
-    def get_author(self):
-        """ this function retrieves the username(from session) of the currently logged in user"""
-        pass
 
 
 class Item(object):
@@ -90,6 +93,13 @@ class Item(object):
         return True
 
 
+@login_manager.user_loader
+def load_user(user_name):
+    """Return the User object with the given email or else None"""
+    gear1 = Gears()
+    return gear1.get_user_by_username(user_name)
+
+
 class Gears(object):
     """ more of a toolbox : contains methods that will assist in the data persistent tasks"""
 
@@ -98,15 +108,17 @@ class Gears(object):
     def __init__(self):
         pass
 
-    @login_manager.user_loader
-    def load_user(self, email):
-        """Return the User object with the given email or else None"""
-        return self.get_user_by_email(email)
-
     def get_user_by_email(self, email):
         """ gos through the users list and returns the user object with the given email"""
         for user in self.user_list:
             if user.email == email:
+                return user
+        return None
+
+    def get_user_by_username(self, user_name):
+        """loops through users and returns the user with the given username"""
+        for user in self.user_list:
+            if user.user_name == user_name:
                 return user
         return None
 
@@ -118,8 +130,9 @@ class Gears(object):
         self.validate_email(email)
         self.validate_user_name(user_name)
         user = User(name, user_name, email)
-        user.set_password(password=password)
+        user.set_password(password)
         self.user_list.append(user)
+        return True
 
     def validate_email(self, email):
         """ raises exception if email is already registered"""
@@ -195,39 +208,47 @@ class Basket(object):
         else:
             raise ValueError('Shopping list with the name {} cannot be found'. format(name))
 
-    def view_list(self, sort='date_created'):
+    def view_list(self, sort='date_created', author=None):
         """ returns all the list sorted as per 3 list attributes: name, date created, date modified
         """
         # extract the attributes to a temp_list sort them then loop through shopping list
         # while arranging them
+
+        filter_list = []
+        if author is not None:
+            for list_ in self.shopping_lists:
+                if list_.author == author:
+                    filter_list.append(list_)
+        else:
+            filter_list = self.shopping_lists
         temp_ = []
         temp_lists = []
         if sort == 'date_created':
-            for list_ in self.shopping_lists:
+            for list_ in filter_list:
                 temp_.append(list_.date_created)
             temp_.sort()
             for attr in temp_:
-                for list_ in self.shopping_lists:
+                for list_ in filter_list:
                     if attr == list_.date_created:
                         temp_lists.append(list_)
             return temp_lists
 
         if sort == 'name':
-            for list_ in self.shopping_lists:
+            for list_ in filter_list:
                 temp_.append(list_.name)
             temp_.sort()
             for attr in temp_:
-                for list_ in self.shopping_lists:
+                for list_ in filter_list:
                     if attr == list_.name:
                         temp_lists.append(list_)
             return temp_lists
 
         if sort == 'date_last_modified':
-            for list_ in self.shopping_lists:
+            for list_ in filter_list:
                 temp_.append(list_.date_last_modified)
             temp_.sort()
             for attr in temp_:
-                for list_ in self.shopping_lists:
+                for list_ in filter_list:
                     if attr == list_.date_last_modified:
                         temp_lists.append(list_)
             return temp_lists
