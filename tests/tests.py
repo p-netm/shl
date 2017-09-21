@@ -1,6 +1,6 @@
 __author__ = 'Sudo Pnet'
 import unittest
-from app.models import Basket, ShoppingList, User, Item
+from app.models import Basket, ShoppingList, User, Item, Gears
 
 
 class ShoppingListTests(unittest.TestCase):
@@ -166,3 +166,40 @@ class ItemTest(unittest.TestCase):
         self.basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
         list_ = self.basket.get_list_by_name('list1')
         self.assertEqual(len(list_.items), 1)
+
+
+class GearsTests(unittest.TestCase):
+    """all things user related"""
+    def setUp(self):
+        """seting up """
+        pass
+
+    def tearDown(self):
+        """ tears down setup"""
+        pass
+
+    def test_add_user_retrieve_function(self):
+        """Checks if number of user increases after registration"""
+        gear = Gears()
+        initial_value = len(gear.user_list)
+        response = gear.add_user('pmuriuki@gmail.com', 'password', 'Peter Muriuki', 'pnet')
+        self.assertTrue(response)
+        self.assertTrue(len(gear.user_list))
+        current_value = len(gear.user_list)
+        self.assertTrue(current_value - initial_value == 1, msg="afterall we just added one person")
+
+        # add a person with the same username
+        with self.assertRaises(Exception):
+            response = gear.add_user('pemuri@gmail.com', 'password', 'Peter Muriuki', 'pnet')
+
+        with self.assertRaises(Exception):
+            response = gear.add_user('pmuriuki@gmail.com', 'password', 'Peter Muriuki', 'pn_et')
+
+        # test retrieve user by email
+
+        user = gear.get_user_by_email('pmuriuki@gmail.com')
+        self.assertTrue(user)
+        self.assertEqual(user.name, 'Peter Muriuki')
+
+        user = gear.get_user_by_email('asbdahjsd')
+        self.assertIsNone(user)
