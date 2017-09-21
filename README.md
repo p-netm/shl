@@ -1,6 +1,7 @@
 # shl
 [![Build Status](https://travis-ci.org/p-netm/shl.svg?branch=challenge2)](https://travis-ci.org/p-netm/shl)
 [![Coverage Status](https://coveralls.io/repos/github/p-netm/shl/badge.svg?branch=challenge2)](https://coveralls.io/github/p-netm/shl?branch=challenge2)
+[![Code Climate](https://codeclimate.com/github/p-netm/shl//badges/gpa.svg)](https://codeclimate.com/github/p-netm/shl/)
 [![Test Coverage](https://codeclimate.com/github/p-netm/shl/badges/coverage.svg)](https://codeclimate.com/github/p-netm/shl/)
 [![Issue Count](https://codeclimate.com/github/p-netm/shl//badges/issue_count.svg)](https://codeclimate.com/github/p-netm/shl/)
 
