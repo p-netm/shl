@@ -33,7 +33,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href={{ url_for('main.add_list') }}><span class="glyphicon glyphicon-plus"></span> Add list</a></li>
+                <li><a href={{ url_for('shl.add_list') }}><span class="glyphicon glyphicon-plus"></span> Add list</a></li>
 
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-user"></span> Account
@@ -65,7 +65,7 @@
     {% endfor %}
     <div class="container-fluid">
 
-    {% for counter in range(0, len(lists)) %}
+    {% for counter in range(0, lists_len) %}
         {% if (counter + 1) % 4 == 0 %}
             <div class="row">
         {% endif %}
