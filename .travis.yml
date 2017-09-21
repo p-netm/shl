@@ -8,9 +8,12 @@ python:
   - "3.7-dev" # 3.7 development branch
   - "nightly" # currently points to 3.7-dev
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install:
+  - "pip install -r requirements.txt"
+  - "pip install coveralls"
 # command to run tests
-script: nosetests
+script:
+  - nosetests --with-coverage
 
 # coverall support
 after_success:
