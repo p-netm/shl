@@ -4,12 +4,14 @@ from flask_login import login_required
 from ..models import User, Basket
 
 basket = Basket()
+
+
 # ROUTES
 @shl.route('/')
 @login_required
 def index():
     # create list functionality
-
+    lists = basket.view_list()  # lists has a list of list objects
     return render_template('index.html', lists=basket.view_list())
 
 

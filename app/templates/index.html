@@ -29,7 +29,7 @@
                 <span class="icon-bar"></span>
             </button>
             <!--/review -->
-            <a class="navbar-brand" href="#">SHOPPING LIST.COM</a>
+            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav navbar-right">
@@ -44,8 +44,8 @@
                         <li><a href="#" class="disabled">Profile</a></li>
                         <li><a href="#" class="">logs</a></li>
                         <li class="divider"></li>
-                        <li><a href="#"> contact us</a></li>
-                        <li><a href="#"> About</a></li>
+                        <li><a href="{{ url_for('shl.contact') }}"> contact us</a></li>
+                        <li><a href="{{ url_for('shl.about') }}"> About</a></li>
                     </ul>
                 </li>
 
@@ -62,145 +62,41 @@
                 <span class="glyphicon glyphicon-trash"></span></button>
                 {{ message }}
             </div>
-        {% endfor %}
+    {% endfor %}
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-> remove the text decoration from text in panels-->
 
+    {% for counter in range(0, len(lists)) %}
+        {% if (counter + 1) % 4 == 0 %}
+            <div class="row">
+        {% endif %}
+
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <!-- clickable cards-> remove the text decoration from text in panels-->
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="#">List Name</a>
+                        <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}">{{ lists[counter].name }}</a>
                     </div>
-                    <a href="#" class="unlink">
+                    <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}" class="unlink">
                         <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
+                            <h5> date_created {{ lists[counter].date_created}}</h5>
+                            <h5> {{ len(lists[counter].items)}} items</h5>
+                            <h5> Total Est. : {# the sum of the items prices #} </h5>
+                            <h5> Last modified: {{ lists[counter].date_last_modified }}</h5>
                         </div>
                     </a>
 
                     <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
+                        <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-trash">delete</span></a>
                         &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
+                        <a href="{{ url_for('shl.edit_list', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-pencil">edit</span></a>
                     </div>
                 </div>
 
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
+        {% if (counter + 1) % 4 == 0 %}
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
+        {% endif %}
+    {% endfor %}
         </div>
     </div>
 </div>
