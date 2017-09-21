@@ -14,10 +14,11 @@ def login():
     if login_form.validate_on_submit():
         # get user by email -> tricky
         email = login_form.email.data
-        user = User.get_user_by_email(email)
+        user = gear.get_user_by_email(email)
         passcode = login_form.passcode.data
         if user and user.check_password(passcode):
-            login_user(user)
+            logging_in_user = user
+            login_user(logging_in_user)
             return redirect(url_for('shl.index') or request.args.get('next'))
         else:
             flash('invalid email or password')
@@ -37,14 +38,15 @@ def register():
     reg_form = RegistrationForm()
     if reg_form.validate_on_submit():
         email = reg_form.email.data
-        user_name = reg_form.user_name.data
+        user_name = str(reg_form.user_name.data).strip()
         passcode = reg_form.passcode.data
         name = reg_form.name.data
         try:
             gear.add_user(email=email, password=passcode, name=name, user_name=user_name)
-        except Exception:
-            flash('username or email already used')
-            return render_template('register.html')
+        except Exception as error:
+
+            flash('username or email already used {}'. format(error))
+            return render_template('register.html', form=reg_form)
         flash('You have been successfully registered')
-        return redirect('auth.login')
+        return redirect(url_for('auth.login'))
     return render_template('register.html', form=reg_form)
