@@ -40,7 +40,11 @@ def register():
         user_name = reg_form.user_name.data
         passcode = reg_form.passcode.data
         name = reg_form.name.data
-        gear.add_user(email=email, password=passcode, name=name, user_name=user_name)
+        try:
+            gear.add_user(email=email, password=passcode, name=name, user_name=user_name)
+        except Exception:
+            flash('username or email already used')
+            return render_template('register.html')
         flash('You have been successfully registered')
         return redirect('auth.login')
     return render_template('register.html', form=reg_form)
