@@ -4,7 +4,7 @@ from app import create_app
 import os
 
 
-app = create_app(os.environ.get('CONFIGURATION'))
+app = create_app('default' or os.environ.get('CONFIGURATION'))
 manager = Manager(app=app)
 
 
