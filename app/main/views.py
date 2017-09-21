@@ -29,3 +29,13 @@ def delete_list():
     we can use to indentify a list-> like say the name of the list"""
 
     return render_template('index.html', list=basket.view_list())
+
+@shl.route('/contact')
+def contact():
+    """display contact details for shoppinglist co."""
+    return render_template('contact.html')
+
+@shl.route('/about')
+def about():
+    """display about shopping list with links to help material and documentation"""
+    return render_template('about.html')
