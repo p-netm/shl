@@ -56,6 +56,7 @@ class ShoppingList(object):
         else:
             raise ValueError('The shopping list name can only be a string or integer')
 
+
         self.author = None
         self.date_created = time.time()
         self.date_last_modified = time.time()
@@ -83,14 +84,10 @@ class Item(object):
         self.name = name
         self.quantity = quantity
         self.price = price
-        self.author = self.get_author()
+        self.author = None
         self.date_added = time.time()
         self.date_last_modified = time.time()
         self.description = description
-
-    def get_author(self):
-        """ returns the username of the person logged in when the item was added"""
-        return True
 
 
 @login_manager.user_loader
@@ -300,6 +297,6 @@ class Basket(object):
 
         return list
 
-    def view_item(self, list_name, sort):
+    def view_item(self, list_name, sort='date_added'):
         """ retrieves returns the list items of the specified list while sorted """
         pass
