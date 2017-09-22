@@ -44,8 +44,7 @@ def register():
         try:
             gear.add_user(email=email, password=passcode, name=name, user_name=user_name)
         except Exception as error:
-
-            flash('username or email already used {}'. format(error))
+            flash('{}'. format(error))
             return render_template('register.html', form=reg_form)
         flash('You have been successfully registered')
         return redirect(url_for('auth.login'))
