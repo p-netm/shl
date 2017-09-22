@@ -152,7 +152,6 @@ class ItemTest(unittest.TestCase):
     def test_item_creation(self):
         """checks to see if the automatically set properties are created"""
         item1 = Item('item', '20', 23.00, 'OF no importance')
-        self.assertTrue(item1.author)
         self.assertTrue(item1.date_added)
         self.assertTrue(item1.date_last_modified)
 
@@ -166,6 +165,70 @@ class ItemTest(unittest.TestCase):
         self.basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
         list_ = self.basket.get_list_by_name('list1')
         self.assertEqual(len(list_.items), 1)
+
+    def test_basket_modify_item(self):
+        """ Tries and checks that an item data is changed after its called"""
+        basket = Basket()
+        basket.create_list('list1')
+        basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
+        #check modification time changes
+        item_obj = basket.shopping_lists[0].items[0]
+        init_mod_time = item_obj.date_last_modified
+        basket.modify_item('oranges', 'list1', name='Bananas')
+        self.assertEqual(item_obj.name, 'Bananas', msg="name has not changed")
+        self.assertFalse(init_mod_time == item_obj.date_last_modified, msg='modified time has not changed')
+        # change quantity
+        basket.modify_item('Bananas', 'list1', quantity='15')
+        self.assertTrue(item_obj.quantity == '15')
+        init_price = item_obj.price
+        basket.modify_item('Bananas', 'list1', price=3.23)
+        self.assertFalse(init_price == item_obj.price)
+        self.assertTrue(item_obj.price == 3.23)
+        inti_desc = item_obj.description
+        basket.modify_item('Bananas', 'list1', description="juicy")
+        self.assertFalse(item_obj.description == inti_desc)
+        self.assertTrue(item_obj.description == "juicy")
+
+    def test_retrieve_item(self):
+        """check error raised if item not found"""
+        basket = Basket()
+        basket.create_list('list1')
+        basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
+        response = basket.get_item_by_name(item_name='oranges', list_name='list1')
+        self.assertTrue(response)
+        self.assertTrue(response.name == 'oranges')
+        self.assertEqual(type(response), Item)
+        with self.assertRaises(Exception):
+            basket.get_item_by_name('adjfgad')
+
+    def test_delete_item(self):
+        """ checks that an item ceases to exist after being deleted"""
+        basket = Basket()
+        basket.create_list('list1')
+        basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
+        response = basket.delete_item('oranges', 'list1')
+        self.assertFalse(len(response.items))
+
+    def test_view_item_sorted_list(self):
+        """Checks if view_ item does sort """
+        basket = Basket()
+        basket.create_list('list1')
+        basket.add_item('list1', 'oranges', '2', 25.00, 'succulent')
+        basket.add_item('list1', 'mangoes', '10', 25.00, 'succulent')
+        basket.add_item('list1', 'apples', '15', 25.00, 'succulent')
+        basket.add_item('list1', 'peach', '7', 25.00, 'succulent')
+        basket.add_item('list1', 'passion', '16', 25.00, 'succulent')
+
+        list_ = basket.view_item('list1', sort='name')
+        temp_list = []
+        for item in list_.items:
+            temp_list.append(item.name)
+        self.assertListEqual(temp_list, ['apples', 'mangoes', 'oranges', 'passion', 'peach'])
+        temp_list = []
+        list_ = basket.view_item('list1', sort='quantity')
+        for item in list_.items:
+            temp_list.append(item.quantity)
+        # self.assertListEqual(temp_list, ['2', '7', '10', '15', '16'])
 
 
 class GearsTests(unittest.TestCase):
