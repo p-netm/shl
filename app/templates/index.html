@@ -20,7 +20,7 @@
 <body>
 
 <nav class="navbar navbar-inverse">
-    <div class="container-fluid">
+    <div class="container-fluid with-nav-flex">
         <div class="navbar-header">
             <!-- review-->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -31,9 +31,24 @@
             <!--/review -->
             <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
         </div>
+        <div class="nav-flex">
+        <form class="from-inline navbar-form" method="POST", action="{{ url_for('shl.index') }}">
+                    <div class="input-group">
+                    {{ form.csrf_token }}
+                    {{ form.name(class='form-control', placeholder= 'list-name') }}
+
+                        <div class="input-group-btn">
+                        {{ form.add(class='btn btn-default') }}
+
+                        </div>
+                    </div>
+        </form>
         <div class="collapse navbar-collapse" id="myNavbar">
+
             <ul class="nav navbar-nav navbar-right">
-                <li><a href={{ url_for('shl.add_list') }}><span class="glyphicon glyphicon-plus"></span> Add list</a></li>
+
+
+
 
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-user"></span> Account
@@ -46,11 +61,14 @@
                         <li class="divider"></li>
                         <li><a href="{{ url_for('shl.contact') }}"> contact us</a></li>
                         <li><a href="{{ url_for('shl.about') }}"> About</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
                     </ul>
                 </li>
 
             </ul>
         </div>
+        </div>
+
     </div>
 </nav>
 
@@ -79,7 +97,7 @@
                     <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}" class="unlink">
                         <div class="panel-body">
                             <h5> date_created {{ lists[counter].date_created}}</h5>
-                            <h5> {{ len(lists[counter].items)}} items</h5>
+                            <h5> {{ (lists[counter].items)| length}} items</h5>
                             <h5> Total Est. : {# the sum of the items prices #} </h5>
                             <h5> Last modified: {{ lists[counter].date_last_modified }}</h5>
                         </div>
@@ -88,7 +106,7 @@
                     <div class="panel-footer text-center">
                         <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-trash">delete</span></a>
                         &nbsp;&nbsp;
-                        <a href="{{ url_for('shl.edit_list', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-pencil">edit</span></a>
+                        <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-pencil">edit</span></a>
                     </div>
                 </div>
 

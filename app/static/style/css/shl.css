@@ -53,5 +53,12 @@ body{
     padding: 5px;
 
 }
+.container-fluid.with-nav-flex{
+    display: flex;
+}
+.nav-flex{
+    text-align: right;
+    display: flex;
+}
 
 
