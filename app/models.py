@@ -25,7 +25,6 @@ class User(UserMixin, object):
         """return the unicode identifier"""
         return self.user_name
 
-
     @property
     def password(self):
         """ raises an attribute error for the format: User.password"""
@@ -56,12 +55,10 @@ class ShoppingList(object):
         else:
             raise ValueError('The shopping list name can only be a string or integer')
 
-
         self.author = None
         self.date_created = time.time()
         self.date_last_modified = time.time()
         self.items = []
-
 
 
 class Item(object):
@@ -182,10 +179,15 @@ class Basket(object):
         returns true if the name is not already being used for another list else False"""
         return name.capitalize() not in self.lists_name_set
 
-    def modify_list(self, name, **kwargs):
+    def modify_list(self, name, new_name=None):
         """input: name of list and the arguments to be changed
         output: returns new list"""
-        pass
+        # we can only modify the name of a list, for other attributes see modify_items()
+        list_ = self.get_list_by_name(name)
+        if new_name and not self.name_checker(new_name):
+            list_.name = new_name
+            list_.date_last_modified = time.time()
+        return list_
 
     def delete_list(self, name):
         """ input: name of list: retrieves list object with the fed in name and pop it
@@ -276,12 +278,45 @@ class Basket(object):
         item_obj = Item(item_name, quantity, price, description)
         list_.items.append(item_obj)
 
-        return list
+        return list_
 
-    def modify_item(self, item_name, list_name):
+    def modify_item(self, item_name, list_name, name=None, price=None, description=None, quantity=None):
         """ input: specified parameters
         output: the updated list object"""
-        pass
+        # we can only modify name, price, description, quantity
+        item = self.get_item_by_name(item_name=item_name, list_name=list_name)
+        if item:
+            # also check that the items name is not already with another item
+            if name and self.item_name_checker(item_name=name, list_name=list_name):
+                item.name = name
+            if price:
+                item.price = price
+            if description:
+                item.description = description
+            if quantity:
+                item.quantity = quantity
+            item.date_last_modified = time.time()
+        else:
+            raise Exception('Item {} was not found in the {} list'.format(item_name, list_name))
+
+    def item_name_checker(self, item_name, list_name):
+        """ Checks if the item_name is already a name of an item in the given list
+        input: item_name, and list_name
+        output: returns True if item_name is not in lits_name.items.names"""
+        list_ = self.get_list_by_name(list_name)
+        for item in list_.items:
+            if item.name == item_name:
+                return False
+        return True
+
+    def get_item_by_name(self, item_name, list_name):
+        """" input: a list name and an item name
+        output: the item whose name is specified -> and that belongs to the list with the name that has been parsed"""
+        list_ = self.get_list_by_name(list_name)
+        for item in list_.items:
+            if item.name == item_name:
+                return item
+        return False
 
     def delete_item(self, item_name, list_name):
         """retrieves the list, retrieves the item from the list and then pops the item
@@ -293,10 +328,67 @@ class Basket(object):
         for item in list_.items:
             if item.name == item_name:
                 item_obj = item
-        list_.items.pop(list.index(item_obj))
+        list_.items.pop(list_.items.index(item_obj))
 
-        return list
+        return list_
 
     def view_item(self, list_name, sort='date_added'):
         """ retrieves returns the list items of the specified list while sorted """
-        pass
+        # get lis; get items list from the list; sort the items return list
+        # items can only be sorted by their name, date_added, date modified, quantity and price
+        shl_list = self.get_list_by_name(list_name)
+        item_list = shl_list.items
+
+        list_ = []
+        temp_list = []
+        if sort == 'name':
+            for item in item_list:
+                temp_list.append(item.name)
+            temp_list.sort()
+            for name in temp_list:
+                for item in item_list:
+                    if item.name == name:
+                        list_.append(item)
+            shl_list.items = list_
+            return shl_list
+        if sort == 'date_added':
+            for item in item_list:
+                temp_list.append(item.date_added)
+            temp_list.sort()
+            for date_added in temp_list:
+                for item in item_list:
+                    if item.date_added == date_added:
+                        list_.append(item)
+            shl_list.items = list_
+            return shl_list
+        if sort == 'date_last_modified':
+            for item in item_list:
+                temp_list.append(item.date_last_modified)
+            temp_list.sort()
+            for date_last_modified in temp_list:
+                for item in item_list:
+                    if item.date_last_modified == date_last_modified:
+                        list_.append(item)
+            shl_list.items = list_
+            return shl_list
+        if sort == 'quantity':
+            for item in item_list:
+                temp_list.append(item.quantity)
+            temp_list.sort()
+            for quantity in temp_list:
+                for item in item_list:
+                    if item.quantity == quantity:
+                        list_.append(item)
+            shl_list.items = list_
+            return shl_list
+        if sort == 'price':
+            for item in item_list:
+                temp_list.append(item.price)
+            temp_list.sort()
+            for price in temp_list:
+                for item in item_list:
+                    if item.price == price:
+                        list_.append(item)
+            shl_list.items = list_
+            return shl_list
+        raise Exception('Unkown sort configuration')
