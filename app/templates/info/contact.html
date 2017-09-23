@@ -1,0 +1,33 @@
+{% extends info.html %}
+{% block head %}
+    {{ super() }}
+    {% block title %}<title> Shopping list contact</title>{% endblock title %}
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% endblock head%}
+{% block body %}
+    {{ super() }}
+{% block navigation %}
+{% endblock navigation %}
+    {{ super }}
+    {% block content %}
+    <!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
+    <div class="container">
+          <div class="jumbotron">
+            {% block jumbo_header %}<div class="page-header">
+            <h1>find me</h1>
+</div>{% block jumbo_header %}
+            {% block jumbo-info %}<p>
+            <!--links to fb, linked in, twitter and email-->
+            <!-- Add font awesome icons -->
+            <a href="https://www.facebook.com/" class="fa fa-facebook"></a>
+            <a href="https://twitter.com/p_netm" class="fa fa-twitter"></a>
+            <a href="https://www.linkedin.com/in/peter-muriuki-094b8411a/" class="fa fa-linkedin-square"></a>
+
+</p>{% block jumbo_info %}
+          </div>
+
+</div>
+    {% endblock content %}
+{% endblock body %}
