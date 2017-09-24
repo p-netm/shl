@@ -14,8 +14,8 @@ class User(UserMixin, object):
 
         if not isinstance(full_name, str):
             raise ValueError("A person's names can only be strings")
-        # if not str.isalnum(user_name):
-        #     raise ValueError('The User name can only contain alpha-numeric characters')
+        if not str.isalnum(user_name):
+            raise ValueError('The User name can only contain alpha-numeric characters')
 
         self.user_name = user_name
         self.email = email
@@ -91,6 +91,7 @@ class Item(object):
         self.date_added = datetime.utcnow()
         self.date_last_modified = datetime.utcnow()
         self.description = description
+        self.amount = 0
 
 
 @login_manager.user_loader
@@ -284,7 +285,8 @@ class Basket(object):
         item_obj = Item(item_name, quantity, price, description)
         list_.items.append(item_obj)
 
-        list_.total += item_obj.price * self.extract_number_from_quantity(quantity)
+        list_.total = self.set_total(list_)
+
         list_.date_last_modified = datetime.utcnow()
 
         return list_
@@ -314,6 +316,7 @@ class Basket(object):
             item.date_last_modified = datetime.utcnow()
             list_ = self.get_list_by_name(list_name)
             list_.date_last_modified = datetime.utcnow()
+            list_.total = self.set_total(list_)
         else:
             raise Exception('Item {} was not found in the {} list'.format(item_name, list_name))
 
@@ -348,6 +351,7 @@ class Basket(object):
                 item_obj = item
         list_.items.pop(list_.items.index(item_obj))
         list_.date_last_modified = datetime.utcnow()
+        list_.total = self.set_total(list_)
 
         return list_
 
@@ -411,3 +415,19 @@ class Basket(object):
             shl_list.items = list_
             return shl_list
         raise Exception('Unknown sort configuration')
+
+    def set_total(self, list_):
+        """
+        input: a list
+        action: goes through each item and sets the item.amount and updates the list.total
+        called for modify_item, delete_item, add_item, view_item
+        return the list
+        """
+        items = list_.items
+        list_total = 0
+        for item in items:
+            item_total = self.extract_number_from_quantity(item.quantity) * item.price
+            item.amount = item_total
+            list_total += item_total
+        list_.total = list_total
+        return list_
