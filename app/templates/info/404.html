@@ -1,0 +1,32 @@
+{% extends "info/info.html" %}
+{% block head %}
+    {{ super() }}
+    {% block title %}<title> Shopping list contact</title>{% endblock %}
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% endblock %}
+{% block body %}
+    {% block navigation %}
+    {{ super() }}
+    {% endblock %}
+
+        {% block content %}
+        <!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
+        <div class="container">
+              <div class="jumbotron">
+                {% block jumbo_header %}<div class="page-header">
+                <h1>Page Not found</h1>
+    </div>{% endblock jumbo_header %}
+                {% block jumbo_info %}<p class="text-center">
+                <!--links to fb, linked in, twitter and email-->
+                <!-- Add font awesome icons -->
+                seems like the resource you are looking for is not here, and probably never was.<br>
+                if it was, then it isn't. Mazeltov
+
+    </p>{% endblock jumbo_info %}
+              </div>
+
+    </div>
+        {% endblock %}
+{% endblock %}
