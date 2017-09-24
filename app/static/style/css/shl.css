@@ -8,6 +8,31 @@ body{
     background: url(../../media/12.jpg) no-repeat center fixed;
     background-size: cover;
 }
+.fa {
+    padding: 20px;
+    font-size: 30px;
+    width: 30px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook {
+    background: #3B5998;
+    color: white;
+}
+.fa-linkedin-square{
+    baskground: #3B5998;
+    color : white;
+}
+.fa-twitter {
+    background: #55ACEE;
+    color: white;
+}
 .navbar{
     margin-bottom: 0;
 }
@@ -60,5 +85,29 @@ body{
     text-align: right;
     display: flex;
 }
+.container-fluid.bars{
 
+}
+.my_list_side_bar {
+    border-right: 2px solid brown;
+    background: rgba(223, 223, 223, 0.8);
+    overflow-y: scroll;
+    max-height: 80%;
 
+}
+.my_list_side_bar h3 {
+    text-align: center;
+}
+.each_list_bar {
+    background: rgba(223, 223, 223, 0.6);
+
+}
+.each_list_bar a.btn.btn-default {
+    color : darkred;
+}
+.each_list_bar div {
+    opacity: 1;
+}
+.hidden {
+    display: none;
+}
