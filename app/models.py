@@ -1,8 +1,8 @@
-__author__ = 'Sudo Pnet'
-import time
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import login_manager
 from flask_login import UserMixin
+import re
+from _datetime import datetime
 
 
 class User(UserMixin, object):
@@ -56,9 +56,10 @@ class ShoppingList(object):
             raise ValueError('The shopping list name can only be a string or integer')
 
         self.author = None
-        self.date_created = time.time()
-        self.date_last_modified = time.time()
+        self.date_created = datetime.utcnow()
+        self.date_last_modified = datetime.utcnow()
         self.items = []
+        self.total = 0
 
 
 class Item(object):
@@ -67,10 +68,15 @@ class Item(object):
     def __init__(self, name, quantity, price, description=None):
         if not isinstance(name, str):
             raise ValueError()
-        if isinstance(quantity, str):
-            pass
+        if not isinstance(quantity, str):
+            raise ValueError(" The quantity value should be a string")
         else:
-            raise ValueError
+            pattern = r'\d+'
+            numbers_list = re.findall(pattern, quantity)
+            if len(numbers_list):
+                number = numbers_list[0]
+            else:
+                raise ValueError("The quantity amount is not quantifiable")
         if description is not None:
             if type(description) != str:
                 raise ValueError
@@ -82,8 +88,8 @@ class Item(object):
         self.quantity = quantity
         self.price = price
         self.author = None
-        self.date_added = time.time()
-        self.date_last_modified = time.time()
+        self.date_added = datetime.utcnow()
+        self.date_last_modified = datetime.utcnow()
         self.description = description
 
 
@@ -186,7 +192,7 @@ class Basket(object):
         list_ = self.get_list_by_name(name)
         if new_name and not self.name_checker(new_name):
             list_.name = new_name
-            list_.date_last_modified = time.time()
+            list_.date_last_modified = datetime.utcnow()
         return list_
 
     def delete_list(self, name):
@@ -251,7 +257,7 @@ class Basket(object):
                     if attr == list_.date_last_modified:
                         temp_lists.append(list_)
             return temp_lists
-        return False
+        return []
 
     def add_item(self,  list_name, item_name, quantity, price, description=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
@@ -278,7 +284,17 @@ class Basket(object):
         item_obj = Item(item_name, quantity, price, description)
         list_.items.append(item_obj)
 
+        list_.total += item_obj.price * self.extract_number_from_quantity(quantity)
+        list_.date_last_modified = datetime.utcnow()
+
         return list_
+
+    def extract_number_from_quantity(self, quantity):
+        """ takes in a string and returns the number in the string"""
+        pattern = r'\d+'
+        numbers_list = re.findall(pattern, quantity)
+        number = numbers_list[0]
+        return float(number)
 
     def modify_item(self, item_name, list_name, name=None, price=None, description=None, quantity=None):
         """ input: specified parameters
@@ -295,7 +311,9 @@ class Basket(object):
                 item.description = description
             if quantity:
                 item.quantity = quantity
-            item.date_last_modified = time.time()
+            item.date_last_modified = datetime.utcnow()
+            list_ = self.get_list_by_name(list_name)
+            list_.date_last_modified = datetime.utcnow()
         else:
             raise Exception('Item {} was not found in the {} list'.format(item_name, list_name))
 
@@ -329,6 +347,7 @@ class Basket(object):
             if item.name == item_name:
                 item_obj = item
         list_.items.pop(list_.items.index(item_obj))
+        list_.date_last_modified = datetime.utcnow()
 
         return list_
 
@@ -391,4 +410,4 @@ class Basket(object):
                         list_.append(item)
             shl_list.items = list_
             return shl_list
-        raise Exception('Unkown sort configuration')
+        raise Exception('Unknown sort configuration')
