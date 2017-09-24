@@ -16,17 +16,12 @@ def index():
     if add_list_form.validate_on_submit():
         name = add_list_form.name.data
         basket.create_list(name)
-        lists = basket.view_list()
-        return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form,
-                               modif_form=modify_form)
+        return redirect(url_for('shl.index'))
     if modify_form.validate_on_submit():
         name = modify_form.name.data
         old_name = modify_form.old_name.data
         basket.modify_list(name=old_name, new_name=name)
-        basket.create_list(name)
-        lists = basket.view_list()
-        return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form,
-                               modif_form=modify_form)
+        return redirect(url_for('shl.index'))
     lists = basket.view_list()  # lists has a list of list objects
     return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form, modif_form=modify_form)
 

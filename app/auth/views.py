@@ -2,7 +2,7 @@ from flask import render_template, session, redirect, url_for, request, flash
 from . import auth
 from .forms import RegistrationForm, LoginForm
 from ..models import User, Gears
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 
 gear = Gears()

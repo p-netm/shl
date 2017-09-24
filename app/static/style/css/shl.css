@@ -16,6 +16,11 @@ body{
     text-decoration: none;
     border-radius: 50%;
 }
+span.list_details {
+    font-size: smaller;
+    colour: #ea5809;
+    font-style: italic;
+}
 
 .fa:hover {
     opacity: 0.7;
