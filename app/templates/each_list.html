@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping-list.com {# name of this list#} </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type='image/x-icon' href="{{ url_for('static', filename='media/favicon.ico') }}">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- My custom css file-->
+    <!--link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css') }}"-->
+    <link rel="stylesheet" href="../static/style/css/shl.css">
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid with-nav-flex">
+        <div class="navbar-header">
+            <!-- review-->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--/review -->
+            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
+        </div>
+        <div class="nav-flex">
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                <li><a data-toggle="modal" data-target="#myModal" href="#">
+                <span class="glyphicon glyphicon-plus"></span>add_item</a></li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span> Account
+                        <span class="caret"></span></a>
+
+
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" class="disabled">Profile</a></li>
+                            <li><a href="#" class="">logs</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ url_for('shl.contact') }}"> contact us</a></li>
+                            <li><a href="{{ url_for('shl.about') }}"> About</a></li>
+                            <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<div class="body-page">
+    <!--The bod page will be primarily used to apply the background image , color and transparency-->
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">
+            <span class="glyphicon glyphicon-trash"></span></button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    <div class="container bars row">
+        <div class="my_list_side_bar col-xs-3">
+            <h3> My lists</h3>
+            {% for list in lists %}
+            <a href="{{ url_for('shl.view_items/' + list.name) }}">
+            <div class="panel">
+                <h4>{{ list.name }}</h4>
+                <p> last_modified: {{ list.date_last_modified }} </p>
+            </div>
+            </a>
+            {% endfor %}
+
+        </div>
+        </div>
+        <div class="each_list_bar col-xs-9">
+            <div>
+                <h3> {{ shl_list.name }} </h3>
+            </div>
+            <h5>date_created: {{ shl_list.date_created }}</h5>
+            <h5>date_last_modified: {{ shl_list.date_last_modified }}</h5>
+            <div class="jumbotron table-responsive">
+                <table class="table table-hover table-striped">
+
+                    <tr>
+                        <th> S.no</th>
+                        <th> item_name</th>
+                        <th> quantity </th>
+                        <th> Est.price</th>
+                        <th> Description</th>
+                        <th> total</th>
+                        <th> </th>
+                        <th> </th>
+                      </tr>
+                    {% for item in shl_list.items %}
+                    <tr>
+                        <td> s.no</td>
+                        <td> {{ item.name }}</td>
+                        <td> {{ item.quantity }}</td>
+                        <td> {{ item.price }}</td>
+                        <td> {{ item.description }}</td>
+                        <td> {{ item.item_total }}</td>
+                        <td><a href="#" data-toggle="modal" data-target="#deleteItemModal"><span class="glyphicon glyphicon-trash"></span> delete </a></td>
+                        <td><a href="#" data-toggle="modal" data-target="#modifyItemModal" ><span class="glyphicon glyphicon-pencil"></span> edit </a>  </td>
+
+
+
+                        <!-- Modal -->
+                        <div id="modifyItemModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Modify Item Modal</h4>
+                              </div>
+                              <div class="modal-body">
+                                <form class="" method="POST" action="{{ url_for('shl.view_items', name=name, _external=True) }}">
+                                        <div class="input-group">
+                                            {{ form.csrf_token }}
+                                            {{ form.list_name(class='form-control hidden', value=name) }}
+                                            {{ form.old_name(class='form-control hidden', value=item.name) }}
+                                            {{ form.old_quantity(class='form-control hidden', value=item.quantity) }}
+                                            {{ form.old_price(class='form-control hidden', value=item.price) }}
+                                            {{ form.old_description(class='form-control hidden', value=item.description) }}
+                                            {{ form.name(class='form-control', placeholder= 'item-name', value=item.name) }}
+                                            {{ form.quantity(class='form-control', placeholder='quantity', value=item.quantity) }}
+                                            {{ form.price(class='form-control', placeholder='price', value=item.price) }}
+                                            {{ form.description(class='form-control', placeholder='description', value=item.description) }}
+                                            {{ form.add(class='btn btn-default') }}
+                                        </div>
+                                    </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+
+
+
+                        <!-- Modal -->
+                        <div id="deleteItemModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Confirm  Item Deletion</h4>
+                              </div>
+                              <div class="modal-body">
+                                <a href="{{ url_for('shl.delete_item', list_name=name,
+                                 item_name=item.name, _external=True) }}" class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash">delete</span></a>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+
+
+
+                    </tr>
+                    {% endfor %}
+
+                </table>
+                <div class="amount">
+                    <span> Total Estimate: {{ shl_list.total }}</span>
+                </div>
+
+            </div>
+            <div class="text-center">
+                <a href="" class="btn btn-default"> DELETE LIST </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add Item Modal</h4>
+      </div>
+      <div class="modal-body">
+        <form class="" method="POST" action="{{ url_for('shl.view_items', name=name, _external=True) }}">
+                <div class="input-group">
+                    {{ form.csrf_token }}
+                    {{ form.list_name(class='form-control hidden', value=name) }}
+                    {{ form.name(class='form-control', placeholder= 'item-name') }}
+                    {{ form.quantity(class='form-control', placeholder='quantity') }}
+                    {{ form.price(class='form-control', placeholder='price') }}
+                    {{ form.description(class='form-control', placeholder='description') }}
+                    {{ form.add(class='btn btn-default') }}
+                </div>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+</body>
+</html>
