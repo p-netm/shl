@@ -35,8 +35,8 @@
         <div class="nav-flex">
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
-                <li><a data-toggle="modal" data-target="#myModal" href="#">
-                <span class="glyphicon glyphicon-plus"></span>add_item</a></li>
+                    <li><a data-toggle="modal" data-target="#myModal" href="#">
+                        <span class="glyphicon glyphicon-plus"></span>add_item</a></li>
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-user"></span> Account
                         <span class="caret"></span></a>
@@ -73,10 +73,11 @@
             <h3> My lists</h3>
             {% for list in lists %}
             <a href="{{ url_for('shl.view_items', list_name=list.name) }}">
-            <div class="panel">
-                <h4>{{ list.name }}</h4>
-                <p> last_modified: {{ list.date_last_modified }} </p>
-            </div>
+                <div class="panel">
+                    <h4>{{ list.name }}</h4>
+
+                    <p> last_modified: {{ list.date_last_modified }} </p>
+                </div>
             </a>
             {% endfor %}
 
@@ -88,94 +89,103 @@
             </div>
             <h5>date_created: {{ shl_list.date_created }}</h5>
             <h5>date_last_modified: {{ shl_list.date_last_modified }}</h5>
+
             <div class="jumbotron table-responsive">
                 <table class="table table-hover table-striped">
 
                     <tr>
                         <th> S.no</th>
                         <th> item_name</th>
-                        <th> quantity </th>
+                        <th> quantity</th>
                         <th> Est.price</th>
                         <th> Description</th>
                         <th> total</th>
-                        <th> </th>
-                        <th> </th>
-                      </tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
                     {% for counter in range(shl_list.items | length) %}
                     <tr>
-                        <td> counter </td>
+                        <td> counter</td>
                         <td> {{ shl_list.items[counter].name }}</td>
                         <td> {{ shl_list.items[counter].quantity }}</td>
                         <td> {{ shl_list.items[counter].price }}</td>
                         <td> {{ shl_list.items[counter].description }}</td>
                         <td> {{ shl_list.items[counter].item_total }}</td>
-                        <td><a href="#" data-toggle="modal" data-target="#deleteItemModal"><span class="glyphicon glyphicon-trash"></span> delete </a></td>
-                        <td><a href="#" data-toggle="modal" data-target="#modifyItemModal" ><span class="glyphicon glyphicon-pencil"></span> edit </a>  </td>
-
+                        <td><a href="#" data-toggle="modal" data-target="#deleteItemModal"><span
+                                class="glyphicon glyphicon-trash"></span> delete </a></td>
+                        <td><a href="#" data-toggle="modal" data-target="#modifyItemModal"><span
+                                class="glyphicon glyphicon-pencil"></span> edit </a></td>
 
 
                         <!-- Modal -->
                         <div id="modifyItemModal" class="modal fade" role="dialog">
-                          <div class="modal-dialog">
+                            <div class="modal-dialog">
 
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Modify Item Modal</h4>
-                              </div>
-                              <div class="modal-body">
-                                <form class="" method="POST" action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
-                                        <div class="input-group">
-                                            {{ mod_form.csrf_token }}
-                                            {{ mod_form.list_name(class='form-control hidden', value=name) }}
-                                            {{ mod_form.old_name(class='form-control hidden', value=shl_list.items[counter].name) }}
-                                            {{ mod_form.old_quantity(class='form-control hidden', value=shl_list.items[counter].quantity) }}
-                                            {{ mod_form.old_price(class='form-control hidden', value=shl_list.items[counter].price) }}
-                                            {{ mod_form.old_description(class='form-control hidden', value=shl_list.items[counter].description) }}
-                                            {{ mod_form.name(class='form-control', placeholder= 'item-name', value=shl_list.items[counter].name) }}
-                                            {{ mod_form.quantity(class='form-control', placeholder='quantity', value=shl_list.items[counter].quantity) }}
-                                            {{ mod_form.price(class='form-control', placeholder='price', value=shl_list.items[counter].price) }}
-                                            {{ mod_form.description(class='form-control', placeholder='description', value=shl_list.items[counter].description) }}
-                                            {{ mod_form.add(class='btn btn-default') }}
-                                        </div>
-                                    </form>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
-                              </div>
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Modify Item Modal</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="" method="POST"
+                                              action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
+                                            <div class="input-group">
+                                                {{ mod_form.csrf_token }}
+                                                {{ mod_form.list_name(class='form-control hidden', value=name) }}
+                                                {{ mod_form.old_name(class='form-control hidden',
+                                                value=shl_list.items[counter].name) }}
+                                                {{ mod_form.old_quantity(class='form-control hidden',
+                                                value=shl_list.items[counter].quantity) }}
+                                                {{ mod_form.old_price(class='form-control hidden',
+                                                value=shl_list.items[counter].price) }}
+                                                {{ mod_form.old_description(class='form-control hidden',
+                                                value=shl_list.items[counter].description) }}
+                                                {{ mod_form.name(class='form-control', placeholder= 'item-name',
+                                                value=shl_list.items[counter].name) }}
+                                                {{ mod_form.quantity(class='form-control', placeholder='quantity',
+                                                value=shl_list.items[counter].quantity) }}
+                                                {{ mod_form.price(class='form-control', placeholder='price',
+                                                value=shl_list.items[counter].price) }}
+                                                {{ mod_form.description(class='form-control', placeholder='description',
+                                                value=shl_list.items[counter].description) }}
+                                                {{ mod_form.add(class='btn btn-default') }}
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Return
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
-
-                          </div>
                         </div>
-
-
 
 
                         <!-- Modal -->
                         <div id="deleteItemModal" class="modal fade" role="dialog">
-                          <div class="modal-dialog">
+                            <div class="modal-dialog">
 
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Confirm  Item Deletion</h4>
-                              </div>
-                              <div class="modal-body">
-                                <a href="{{ url_for('shl.delete_item', list_name=name,
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Confirm Item Deletion</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <a href="{{ url_for('shl.delete_item', list_name=name,
                                  item_name=shl_list.items[counter].name, _external=True) }}" class="btn btn-default">
-                                <span class="glyphicon glyphicon-trash">delete</span></a>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
-                              </div>
+                                            <span class="glyphicon glyphicon-trash">delete</span></a>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Return
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
-
-                          </div>
                         </div>
-
-
 
 
                     </tr>
@@ -188,52 +198,45 @@
 
             </div>
             <div class="text-center">
-                <a href="{{ url_for('shl.delete_list', name=list_name, _external=True) }}" class="btn btn-default"> DELETE LIST </a>
+                <a href="{{ url_for('shl.delete_list', name=list_name, _external=True) }}" class="btn btn-default">
+                    DELETE LIST </a>
             </div>
         </div>
 
     </div>
-    </div>
-
-
+</div>
 
 
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Add Item Modal</h4>
-      </div>
-      <div class="modal-body">
-        <form class="" method="POST" action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
-                <div class="input-group">
-                    {{ form.csrf_token }}
-                    {{ form.list_name(class='form-control hidden', value=name) }}
-                    {{ form.name(class='form-control', placeholder= 'item-name') }}
-                    {{ form.quantity(class='form-control', placeholder='quantity') }}
-                    {{ form.price(class='form-control', placeholder='price') }}
-                    {{ form.description(class='form-control', placeholder='description') }}
-                    {{ form.add(class='btn btn-default') }}
-                </div>
-            </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
-      </div>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Item Modal</h4>
+            </div>
+            <div class="modal-body">
+                <form class="" method="POST" action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
+                    <div class="input-group">
+                        {{ form.csrf_token }}
+                        {{ form.list_name(class='form-control hidden', value=name) }}
+                        {{ form.name(class='form-control', placeholder= 'item-name') }}
+                        {{ form.quantity(class='form-control', placeholder='quantity') }}
+                        {{ form.price(class='form-control', placeholder='price') }}
+                        {{ form.description(class='form-control', placeholder='description') }}
+                        {{ form.add(class='btn btn-default') }}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+            </div>
+        </div>
+
     </div>
-
-  </div>
 </div>
-
-
-
-
-
-
 
 
 </body>

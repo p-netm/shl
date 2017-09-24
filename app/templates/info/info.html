@@ -1,22 +1,22 @@
 {% extends "info/sub_base.html" %}
 {% block head %}
-    {{ super() }}
-    {% block title %}{{ super() }}{% endblock %}
+{{ super() }}
+{% block title %}{{ super() }}{% endblock %}
 {% endblock %}
 {% block body %}
-        {{ super() }}
-    {% block navigation %}
-    {{ super() }}
-    {% endblock %}
+{{ super() }}
+{% block navigation %}
+{{ super() }}
+{% endblock %}
 
-        {% block content %}
-        <!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
-            <div class="container">
-              <div class="jumbotron">
-                {% block jumbo_header %}{% endblock jumbo_header %}
-                {% block jumbo_info %}{% endblock jumbo_info %}
-              </div>
-
+{% block content %}
+<!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
+<div class="container">
+    <div class="jumbotron">
+        {% block jumbo_header %}{% endblock jumbo_header %}
+        {% block jumbo_info %}{% endblock jumbo_info %}
     </div>
-        {% endblock %}
+
+</div>
+{% endblock %}
 {% endblock %}

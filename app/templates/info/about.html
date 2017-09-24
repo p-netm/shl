@@ -1,26 +1,28 @@
 {% extends "info/info.html" %}
 {% block head %}
-    {{ super() }}
-    {% block title %}<title> Shopping list About us</title>{% endblock %}
+{{ super() }}
+{% block title %}<title> Shopping list About us</title>{% endblock %}
 {% endblock %}
 {% block body %}
 {% block navigation %}
 {{ super() }}
 {% endblock %}
 
-    {% block content %}
-    <!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
-    <div class="container">
-          <div class="jumbotron">
-            {% block jumbo_header %}<div class="page-header">
+{% block content %}
+<!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
+<div class="container">
+    <div class="jumbotron">
+        {% block jumbo_header %}
+        <div class="page-header">
             <h1>About Shopping List</h1>
-</div>{% endblock jumbo_header %}
-            {% block jumbo_info %}<p>
-                a shopping list web based application that
-                allows users to create , track their shopping needs as well as share their shopping lists with others
-</p>{% endblock jumbo_info %}
-          </div>
+        </div>
+        {% endblock jumbo_header %}
+        {% block jumbo_info %}<p>
+        a shopping list web based application that
+        allows users to create , track their shopping needs as well as share their shopping lists with others
+    </p>{% endblock jumbo_info %}
+    </div>
 
 </div>
-    {% endblock %}
+{% endblock %}
 {% endblock %}
