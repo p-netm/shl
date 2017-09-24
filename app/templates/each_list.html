@@ -69,10 +69,10 @@
     </div>
     {% endfor %}
     <div class="container bars row">
-        <div class="my_list_side_bar col-xs-3">
+        <div class="my_list_side_bar col-lg-3 col-md-3">
             <h3> My lists</h3>
             {% for list in lists %}
-            <a href="{{ url_for('shl.view_items/' + list.name) }}">
+            <a href="{{ url_for('shl.view_items', list_name=list.name) }}">
             <div class="panel">
                 <h4>{{ list.name }}</h4>
                 <p> last_modified: {{ list.date_last_modified }} </p>
@@ -81,8 +81,8 @@
             {% endfor %}
 
         </div>
-        </div>
-        <div class="each_list_bar col-xs-9">
+
+        <div class="each_list_bar col-lg-9 col-md-9 col-sm-12 col-xs-12">
             <div>
                 <h3> {{ shl_list.name }} </h3>
             </div>
@@ -101,14 +101,14 @@
                         <th> </th>
                         <th> </th>
                       </tr>
-                    {% for item in shl_list.items %}
+                    {% for counter in range(shl_list.items | length) %}
                     <tr>
-                        <td> s.no</td>
-                        <td> {{ item.name }}</td>
-                        <td> {{ item.quantity }}</td>
-                        <td> {{ item.price }}</td>
-                        <td> {{ item.description }}</td>
-                        <td> {{ item.item_total }}</td>
+                        <td> counter </td>
+                        <td> {{ shl_list.items[counter].name }}</td>
+                        <td> {{ shl_list.items[counter].quantity }}</td>
+                        <td> {{ shl_list.items[counter].price }}</td>
+                        <td> {{ shl_list.items[counter].description }}</td>
+                        <td> {{ shl_list.items[counter].item_total }}</td>
                         <td><a href="#" data-toggle="modal" data-target="#deleteItemModal"><span class="glyphicon glyphicon-trash"></span> delete </a></td>
                         <td><a href="#" data-toggle="modal" data-target="#modifyItemModal" ><span class="glyphicon glyphicon-pencil"></span> edit </a>  </td>
 
@@ -125,19 +125,19 @@
                                 <h4 class="modal-title">Modify Item Modal</h4>
                               </div>
                               <div class="modal-body">
-                                <form class="" method="POST" action="{{ url_for('shl.view_items', name=name, _external=True) }}">
+                                <form class="" method="POST" action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
                                         <div class="input-group">
-                                            {{ form.csrf_token }}
-                                            {{ form.list_name(class='form-control hidden', value=name) }}
-                                            {{ form.old_name(class='form-control hidden', value=item.name) }}
-                                            {{ form.old_quantity(class='form-control hidden', value=item.quantity) }}
-                                            {{ form.old_price(class='form-control hidden', value=item.price) }}
-                                            {{ form.old_description(class='form-control hidden', value=item.description) }}
-                                            {{ form.name(class='form-control', placeholder= 'item-name', value=item.name) }}
-                                            {{ form.quantity(class='form-control', placeholder='quantity', value=item.quantity) }}
-                                            {{ form.price(class='form-control', placeholder='price', value=item.price) }}
-                                            {{ form.description(class='form-control', placeholder='description', value=item.description) }}
-                                            {{ form.add(class='btn btn-default') }}
+                                            {{ mod_form.csrf_token }}
+                                            {{ mod_form.list_name(class='form-control hidden', value=name) }}
+                                            {{ mod_form.old_name(class='form-control hidden', value=shl_list.items[counter].name) }}
+                                            {{ mod_form.old_quantity(class='form-control hidden', value=shl_list.items[counter].quantity) }}
+                                            {{ mod_form.old_price(class='form-control hidden', value=shl_list.items[counter].price) }}
+                                            {{ mod_form.old_description(class='form-control hidden', value=shl_list.items[counter].description) }}
+                                            {{ mod_form.name(class='form-control', placeholder= 'item-name', value=shl_list.items[counter].name) }}
+                                            {{ mod_form.quantity(class='form-control', placeholder='quantity', value=shl_list.items[counter].quantity) }}
+                                            {{ mod_form.price(class='form-control', placeholder='price', value=shl_list.items[counter].price) }}
+                                            {{ mod_form.description(class='form-control', placeholder='description', value=shl_list.items[counter].description) }}
+                                            {{ mod_form.add(class='btn btn-default') }}
                                         </div>
                                     </form>
                               </div>
@@ -164,7 +164,7 @@
                               </div>
                               <div class="modal-body">
                                 <a href="{{ url_for('shl.delete_item', list_name=name,
-                                 item_name=item.name, _external=True) }}" class="btn btn-default">
+                                 item_name=shl_list.items[counter].name, _external=True) }}" class="btn btn-default">
                                 <span class="glyphicon glyphicon-trash">delete</span></a>
                               </div>
                               <div class="modal-footer">
@@ -188,13 +188,13 @@
 
             </div>
             <div class="text-center">
-                <a href="" class="btn btn-default"> DELETE LIST </a>
+                <a href="{{ url_for('shl.delete_list', name=list_name, _external=True) }}" class="btn btn-default"> DELETE LIST </a>
             </div>
         </div>
 
     </div>
-</div>
-</div>
+    </div>
+
 
 
 
@@ -209,7 +209,7 @@
         <h4 class="modal-title">Add Item Modal</h4>
       </div>
       <div class="modal-body">
-        <form class="" method="POST" action="{{ url_for('shl.view_items', name=name, _external=True) }}">
+        <form class="" method="POST" action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
                 <div class="input-group">
                     {{ form.csrf_token }}
                     {{ form.list_name(class='form-control hidden', value=name) }}

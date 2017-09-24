@@ -87,14 +87,14 @@
                         <!-- clickable cards-> remove the text decoration from text in panels-->
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}">{{ lists[counter].name }}</a>
+                        <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}">{{ lists[counter].name }}</a>
                     </div>
-                    <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}" class="unlink">
+                    <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}" class="unlink">
                         <div class="panel-body">
-                            <h5> date_created {{ moment(lists[counter].date_created).format('LLL') }}</h5>
-                            <h5> {{ (lists[counter].items)| length}} items</h5>
-                            <h5> Total Est. : {{ lists[counter].total }} </h5>
-                            <h5> Last modified: {{ moment(lists[counter].date_last_modified).format('LLL') }}</h5>
+                            <h5> date_created <span class="list_details">{{ moment(lists[counter].date_created).format('LLL') }} </span></h5>
+                            <h5>  <span class="list_details">{{ (lists[counter].items)| length}} </span> items</h5>
+                            <h5> Total Est. : <span class="list_details"> {{ lists[counter].total }} </span> </h5>
+                            <h5> Last modified: <span class="list_details">{{ moment(lists[counter].date_last_modified).format('LLL') }} </span></h5>
                         </div>
                     </a>
 
