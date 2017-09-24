@@ -32,41 +32,36 @@
             <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
         </div>
         <div class="nav-flex">
-        <form class="from-inline navbar-form" method="POST", action="{{ url_for('shl.index') }}">
-                    <div class="input-group">
-                    {{ form.csrf_token }}
-                    {{ form.name(class='form-control', placeholder= 'list-name') }}
 
-                        <div class="input-group-btn">
-                        {{ form.add(class='btn btn-default') }}
-
-                        </div>
-                    </div>
-        </form>
         <div class="collapse navbar-collapse" id="myNavbar">
-
             <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated %}
+            <li>
+            <a data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus"></span>Add list</a>
+            </li>
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="glyphicon glyphicon-user"></span> Account
+                <span class="caret"></span></a>
 
 
-
-
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user"></span> Account
-                    <span class="caret"></span></a>
-
-
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" class="disabled">Profile</a></li>
-                        <li><a href="#" class="">logs</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{{ url_for('shl.contact') }}"> contact us</a></li>
-                        <li><a href="{{ url_for('shl.about') }}"> About</a></li>
-                        <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
-                    </ul>
-                </li>
-
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" class="disabled">Profile</a></li>
+                    <li><a href="#" class="">logs</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{{ url_for('shl.contact') }}"><span class="glyphicon glyphicon-envelope"></span> Contact us</a></li>
+                    <li><a href="{{ url_for('shl.about') }}"><span class="glyphicon glyphicon-exclamation-sign"></span> About </a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
+                </ul>
+            </li>
+            {% else %}
+            <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+            <li><a href="{{ url_for('auth.register') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="{{ url_for('shl.contact') }}"><span class="glyphicon glyphicon-envelope"></span> Contact us</a></li>
+            <li><a href="{{ url_for('shl.about') }}"><span class="glyphicon glyphicon-exclamation-sign"></span> About </a></li>
+            {% endif %}
             </ul>
         </div>
+
         </div>
 
     </div>
@@ -96,17 +91,85 @@
                     </div>
                     <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}" class="unlink">
                         <div class="panel-body">
-                            <h5> date_created {{ lists[counter].date_created}}</h5>
+                            <h5> date_created {{ moment(lists[counter].date_created).format('LLL') }}</h5>
                             <h5> {{ (lists[counter].items)| length}} items</h5>
-                            <h5> Total Est. : {# the sum of the items prices #} </h5>
-                            <h5> Last modified: {{ lists[counter].date_last_modified }}</h5>
+                            <h5> Total Est. : {{ lists[counter].total }} </h5>
+                            <h5> Last modified: {{ moment(lists[counter].date_last_modified).format('LLL') }}</h5>
                         </div>
                     </a>
 
                     <div class="panel-footer text-center">
-                        <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-trash">delete</span></a>
+                        <a  data-toggle="modal" data-target="#deleteModal"><span class="glyphicon glyphicon-trash">delete</span></a>
                         &nbsp;&nbsp;
-                        <a href="{{ url_for('shl.view_items', name=lists[counter].name, _external=True) }}"><span class="glyphicon glyphicon-pencil">edit</span></a>
+
+
+
+                        <!-- delete Modal -->
+                        <div id="deleteModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Confirm delete action</h4>
+                              </div>
+                              <div class="modal-body">
+                                <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}" class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash">delete</span></a>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+
+
+
+
+                        <a  data-toggle="modal" data-target="#modifyModal"><span class="glyphicon glyphicon-pencil">edit</span></a>
+
+
+                        <!-- delete Modal -->
+                        <div id="modifyModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Modify list details</h4>
+                              </div>
+                              <div class="modal-body">
+                                <form class="from-inline" method="POST" action="{{  url_for('shl.index', _external=True) }}">
+                                            {{ modif_form.csrf_token }}
+                                            {{ modif_form.old_name(class='form-control hidden', value=lists[counter].name )}}
+                                            <div class="input-group">
+
+                                            {{ modif_form.name(class='form-control', placeholder= lists[counter].name) }}
+
+                                                <div class="input-group-btn">
+                                                {{ modif_form.add(class='btn btn-default') }}
+
+                                                </div>
+                                            </div>
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+
+
+
+
                     </div>
                 </div>
 
@@ -118,5 +181,48 @@
         </div>
     </div>
 </div>
+{{ moment.include_moment() }}
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create a list name</h4>
+      </div>
+      <div class="modal-body">
+        <form class="from-inline" method="POST" action="{{ url_for('shl.index', _external=True) }}">
+                    <div class="input-group">
+                    {{ form.csrf_token }}
+                    {{ form.name(class='form-control', placeholder= 'list-name') }}
+
+                        <div class="input-group-btn">
+                        {{ form.add(class='btn btn-default') }}
+
+                        </div>
+                    </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
