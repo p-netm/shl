@@ -61,13 +61,17 @@
 
 <div class="body-page">
     <!--The bod page will be primarily used to apply the background image , color and transparency-->
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">
-            <span class="glyphicon glyphicon-trash"></span></button>
-        {{ message }}
-    </div>
-    {% endfor %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     <div class="container bars row">
         <div class="my_list_side_bar col-lg-3 col-md-3">
             <h3> My lists</h3>
@@ -132,6 +136,7 @@
                                               action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
                                             <div class="input-group">
                                                 {{ mod_form.csrf_token }}
+
                                                 {{ mod_form.list_name(class='form-control hidden', value=name) }}
                                                 {{ mod_form.old_name(class='form-control hidden',
                                                 value=shl_list.items[counter].name) }}
@@ -141,14 +146,19 @@
                                                 value=shl_list.items[counter].price) }}
                                                 {{ mod_form.old_description(class='form-control hidden',
                                                 value=shl_list.items[counter].description) }}
+
                                                 {{ mod_form.name(class='form-control', placeholder= 'item-name',
                                                 value=shl_list.items[counter].name) }}
+
                                                 {{ mod_form.quantity(class='form-control', placeholder='quantity',
                                                 value=shl_list.items[counter].quantity) }}
+
                                                 {{ mod_form.price(class='form-control', placeholder='price',
                                                 value=shl_list.items[counter].price) }}
+
                                                 {{ mod_form.description(class='form-control', placeholder='description',
                                                 value=shl_list.items[counter].description) }}
+
                                                 {{ mod_form.add(class='btn btn-default') }}
                                             </div>
                                         </form>

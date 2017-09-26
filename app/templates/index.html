@@ -46,9 +46,7 @@
 
 
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" class="disabled">Profile</a></li>
-                            <li><a href="#" class="">logs</a></li>
-                            <li class="divider"></li>
+
                             <li><a href="{{ url_for('shl.contact') }}"><span
                                     class="glyphicon glyphicon-envelope"></span> Contact us</a></li>
                             <li><a href="{{ url_for('shl.about') }}"><span
@@ -57,7 +55,7 @@
                         </ul>
                     </li>
                     {% else %}
-                    <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+                    <li><a  href="{{ url_for('auth.login') }}">Log in</a></li>
                     <li><a href="{{ url_for('auth.register') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
                     </li>
                     <li><a href="{{ url_for('shl.contact') }}"><span class="glyphicon glyphicon-envelope"></span>
@@ -75,13 +73,17 @@
 
 <div class="body-page">
     <!--The bod page will be primarily used to apply the background image , color and transparency-->
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">
-            <span class="glyphicon glyphicon-trash"></span></button>
-        {{ message }}
-    </div>
-    {% endfor %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     <div class="container-fluid">
 
         {% for counter in range(0, lists_len) %}
