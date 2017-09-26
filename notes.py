@@ -13,3 +13,7 @@ FLASKY_ADMIN
 
 
 """
+"""
+When you modify an item or change aby aattribute of an item, the list is modified too and thus
+i change the date_last modified for the whole list as well.
+"""

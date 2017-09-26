@@ -223,6 +223,7 @@ class Basket(object):
         filter_list = []
         if author is not None:
             for list_ in self.shopping_lists:
+                self.set_total(list_)
                 if list_.author == author:
                     filter_list.append(list_)
         else:
@@ -285,7 +286,7 @@ class Basket(object):
         item_obj = Item(item_name, quantity, price, description)
         list_.items.append(item_obj)
 
-        list_.total = self.set_total(list_)
+        list_.total = self.set_total(list_).total
 
         list_.date_last_modified = datetime.utcnow()
 
@@ -316,7 +317,7 @@ class Basket(object):
             item.date_last_modified = datetime.utcnow()
             list_ = self.get_list_by_name(list_name)
             list_.date_last_modified = datetime.utcnow()
-            list_.total = self.set_total(list_)
+            list_.total = self.set_total(list_).total
         else:
             raise Exception('Item {} was not found in the {} list'.format(item_name, list_name))
 
@@ -351,7 +352,7 @@ class Basket(object):
                 item_obj = item
         list_.items.pop(list_.items.index(item_obj))
         list_.date_last_modified = datetime.utcnow()
-        list_.total = self.set_total(list_)
+        list_.total = self.set_total(list_).total
 
         return list_
 

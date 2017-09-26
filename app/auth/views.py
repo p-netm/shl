@@ -21,7 +21,7 @@ def login():
             login_user(logging_in_user)
             return redirect(url_for('shl.index') or request.args.get('next'))
         else:
-            flash('invalid email or password')
+            flash('invalid email or password', 'error')
     return render_template('login.html', form=login_form)
 
 
@@ -29,7 +29,7 @@ def login():
 @login_required
 def logout():
     logout_user()  # removes and resets a user session
-    flash('GOODBYE')
+    flash('GOODBYE', 'info')
     return redirect(url_for('shl.index'))
 
 
@@ -44,8 +44,8 @@ def register():
         try:
             gear.add_user(email=email, password=passcode, name=name, user_name=user_name)
         except Exception as error:
-            flash('{}'. format(error))
+            flash('{}'. format(error), 'error')
             return render_template('register.html', form=reg_form)
-        flash('You have been successfully registered')
+        flash('You have been successfully registered', 'success')
         return redirect(url_for('auth.login'))
     return render_template('register.html', form=reg_form)

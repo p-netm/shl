@@ -23,6 +23,8 @@ def index():
         basket.modify_list(name=old_name, new_name=name)
         return redirect(url_for('shl.index'))
     lists = basket.view_list()  # lists has a list of list objects
+    if not len(lists):
+        flash("Seems like you currently have no list, click on the add_list link to get started", 'info')
     return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form, modif_form=modify_form)
 
 
@@ -60,21 +62,22 @@ def view_items(list_name):
         price = form.price.data
         description = form.description.data
         basket.add_item(list_name, item_name, quantity, price, description)
-        flash('item added succesfully')
+        flash('item added succesfully', 'success')
         return redirect(url_for('shl.view_items', list_name=list_name))
+
     if mod_form.validate_on_submit():
         # we extract both the old and the new values, compare and if not same change them
         item_name = mod_form.name.data
         old_item_name = mod_form.old_name.data
         quantity = mod_form.quantity.data
-        old_quantity = mod_form.quantity.data
         price = mod_form.price.data
-        old_price = mod_form.old_price.data
         description = mod_form.description.data
-        old_description = mod_form.old_description.data
-        basket.modify_item(item_name=old_item_name, list_name=list_name, name=item_name, price=price,
+        try:
+            basket.modify_item(item_name=old_item_name, list_name=list_name, name=item_name, price=price,
                            description=description, quantity=quantity)
-        flash('item modified successfully')
+        except Exception as error:
+            flash(error, 'error')
+        flash('item modified successfully', 'success')
         return redirect(url_for('shl.view_items', list_name=list_name))
     return render_template('each_list.html', shl_list=basket.view_item(list_name=list_name), lists=basket.view_list(),
                            form=form, mod_form=mod_form, name=list_name)
