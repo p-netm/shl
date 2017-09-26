@@ -16,8 +16,8 @@
 <div class="container-fluid">
 <!-- I need a centered div right here: both vertically and horizontally -->
 <div>
-<a href="{{ url_for(auth.login) }}" class="btn btn-default"> LOGIN</a>
-<a href="{{ url_for(auth.register) }}" class="btn btn-default"> SIGN UP</a>
+<a href="{{ url_for('auth.login') }}" class="btn btn-default"> LOGIN</a>
+<a href="{{ url_for('auth.register') }}" class="btn btn-default"> SIGN UP</a>
 </div>
 </div>
 {% endblock %}
