@@ -13,6 +13,16 @@ def index():
     # create list functionality
     add_list_form = AddListForm()
     modify_form = ModifyForm()
+
+    if modify_form.validate_on_submit():
+        name = modify_form.name.data
+        old_name = modify_form.old_name.data
+        try:
+            basket.modify_list(name=old_name, new_name=name)
+        except ValueError as error:
+            flash(str(error), 'danger')
+        return redirect(url_for('shl.index'))
+
     if add_list_form.validate_on_submit():
         name = add_list_form.name.data
         try:
@@ -21,12 +31,10 @@ def index():
             flash(str(error), 'danger')
             return redirect(url_for('shl.index'))
         return redirect(url_for('shl.index'))
-    if modify_form.validate_on_submit():
-        name = modify_form.name.data
-        old_name = modify_form.old_name.data
-        basket.modify_list(name=old_name, new_name=name)
-        return redirect(url_for('shl.index'))
+
+
     try:
+        lists = []
         lists = basket.view_list()  # lists has a list of list objects
     except Exception as e:
         flash(str(e), 'danger')

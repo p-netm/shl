@@ -162,7 +162,6 @@ class Basket(object):
 
     def __init__(self):
         self.shopping_lists = []
-        self.lists_name_set = set()
 
     def create_list(self, name):
         """ input: a shopping-list name
@@ -176,25 +175,38 @@ class Basket(object):
         name = name.strip()
         if self.name_checker(name):
             self.shopping_lists.append(list_obj)
-            self.lists_name_set.add(list_obj.name.capitalize())
+            self.get_lists_name_set()
         else:
             raise ValueError('the name {} is already in use'.format(name))
         return self.shopping_lists
 
+    def get_lists_name_set(self):
+        """ Returns a set that contains the names in the current shoppingLists lists"""
+        set_ = set()
+        for list in self.shopping_lists:
+            set_.add(list.name)
+        return set_
+
     def name_checker(self, name):
         """input: list_name
         returns true if the name is not already being used for another list else False"""
-        return name.capitalize() not in self.lists_name_set
+        names_set = self.get_lists_name_set()
+        for name_ in names_set:
+            if name_ == name:
+                return False
+        return True
 
     def modify_list(self, name, new_name=None):
         """input: name of list and the arguments to be changed
         output: returns new list"""
         # we can only modify the name of a list, for other attributes see modify_items()
         list_ = self.get_list_by_name(name)
-        if new_name and not self.name_checker(new_name):
+        if new_name and self.name_checker(new_name):
             list_.name = new_name
             list_.date_last_modified = datetime.utcnow()
-        return list_
+        else:
+            raise ValueError("Seems like you already have a list with that name")
+        return True
 
     def delete_list(self, name):
         """ input: name of list: retrieves list object with the fed in name and pop it
