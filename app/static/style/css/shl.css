@@ -65,6 +65,7 @@ span.list_details {
 }
 .panel:hover {
     box-shadow: 5px 10px 5px #222;
+    background-color: rgba(200, 200, 200, 0.8);
 }
 .panel .panel-heading:hover{
     text-decoration: underline;
@@ -115,4 +116,14 @@ span.list_details {
 }
 .hidden {
     display: none;
+}
+.a-panel:visited,.unlink:link{
+    text-decoration: None;
+    color: black;
+}
+.my_list_side_bar .panel {
+    padding-left: 10px;
+}
+.pointer {
+    cursor: hand;
 }
