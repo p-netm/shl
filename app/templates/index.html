@@ -109,13 +109,13 @@
                     </a>
 
                     <div class="panel-footer text-center">
-                        <a data-toggle="modal" data-target="#deleteModal"><span
+                        <a data-toggle="modal" data-target="#del{{counter}}"><span
                                 class="glyphicon glyphicon-trash">delete</span></a>
                         &nbsp;&nbsp;
 
 
                         <!-- delete Modal -->
-                        <div id="deleteModal" class="modal fade" role="dialog">
+                        <div id="del{{counter}}" class="modal fade" role="dialog">
                             <div class="modal-dialog">
 
                                 <!-- Modal content-->
@@ -138,13 +138,12 @@
                             </div>
                         </div>
 
-
-                        <a data-toggle="modal" data-target="#modifyModal"><span
+                        <a data-toggle="modal" data-target="#{{counter}}"><span
                                 class="glyphicon glyphicon-pencil">edit</span></a>
 
 
                         <!-- delete Modal -->
-                        <div id="modifyModal" class="modal fade" role="dialog">
+                        <div id="{{ counter }}" class="modal fade" role="dialog">
                             <div class="modal-dialog">
 
                                 <!-- Modal content-->
