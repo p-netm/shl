@@ -163,7 +163,7 @@ class Basket(object):
     def __init__(self):
         self.shopping_lists = []
 
-    def create_list(self, name):
+    def create_list(self, name, author=None):
         """ input: a shopping-list name
         calls the shopping list constructor
         output: updated shopping_list else false"""
@@ -192,7 +192,7 @@ class Basket(object):
         returns true if the name is not already being used for another list else False"""
         names_set = self.get_lists_name_set()
         for name_ in names_set:
-            if name_ == name:
+            if name_.capitalize() == name.capitalize():
                 return False
         return True
 
@@ -274,7 +274,7 @@ class Basket(object):
         raise Exception('Unkown sort configuration')
 
 
-    def add_item(self,  list_name, item_name, quantity, price, description=None):
+    def add_item(self,  list_name, item_name, quantity, price, description=None, author=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
         and then adds the created item object to a list object with the fed in list_name
         output: the updated list"""
