@@ -22,7 +22,7 @@
 
 ### Interface:
 
-####### the home page
+###### the home page
 ![index](https://user-images.githubusercontent.com/28119869/30607767-cf8cc600-9d7e-11e7-9b25-844e97275227.png)
 
 ## Installation
@@ -74,3 +74,26 @@
 ![auth/register](https://user-images.githubusercontent.com/28119869/30535853-5ad9343c-9c6c-11e7-8d53-d3c350c932ea.png)
 
 ##### add new list
+> Enables user to add a new list with a unique name each time
+
+##### add a new item 
+> A user can add an item to an active list: the add_item link is on the navigation and pops up the modal shown below
+
+##### Modification
+> a User can modify each and every aspect of a shopping list and item
+
+### Viewing Public ShoppingLists
+ ***
+ Given that a user may know the user_name of another user. Hir can create a url that displays the second
+ users shopping lists. However the first user cannot edit or delete these or any other lists that they do not own(create)
+ 
+### Aknowledgements
+All of this would have never been possible without the support of my two LFAs Boswell and Dennis, they were instrumental in
+providing very useful feedback and help. Special thanks goes to my team
+    
+    * Rahma 
+    * Gatana
+    * Leo
+    * Abdul
+    * and me
+who always reminded and showed me what truecollaboration means and feels like.
