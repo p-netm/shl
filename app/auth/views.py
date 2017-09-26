@@ -1,7 +1,7 @@
 from flask import render_template, session, redirect, url_for, request, flash
 from . import auth
 from .forms import RegistrationForm, LoginForm
-from ..models import User, Gears
+from ..models import Gears
 from flask_login import login_user, login_required, logout_user, current_user
 
 
@@ -30,7 +30,7 @@ def login():
 def logout():
     logout_user()  # removes and resets a user session
     flash('GOODBYE', 'info')
-    return redirect(url_for('shl.index'))
+    return render_template('info.landing_page.html')
 
 
 @auth.route('/register', methods=['POST', 'GET'])

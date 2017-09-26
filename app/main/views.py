@@ -26,7 +26,7 @@ def index():
     if add_list_form.validate_on_submit():
         name = add_list_form.name.data
         try:
-            basket.create_list(name)
+            basket.create_list(name, author=session['user_id'])
         except ValueError as error:
             flash(str(error), 'danger')
             return redirect(url_for('shl.index'))
@@ -38,7 +38,7 @@ def index():
         lists = basket.view_list()  # lists has a list of list objects
     except Exception as e:
         flash(str(e), 'danger')
-    if not len(lists):
+    if not len(lists) and session.get('user_id'):
         flash("Seems like you currently have no lists, click on the add_list link to get started", 'info')
     return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form, modif_form=modify_form)
 
@@ -80,7 +80,7 @@ def view_items(list_name):
         price = form.price.data
         description = form.description.data
         try:
-            basket.add_item(list_name, item_name, quantity, price, description)
+            basket.add_item(list_name, item_name, quantity, price, description, author=session['user_id'])
         except ValueError as error:
             flash(str(error), 'danger')
             return redirect(url_for('shl.view_items', list_name=list_name))
@@ -103,12 +103,12 @@ def view_items(list_name):
         flash('item modified successfully', 'success')
         return redirect(url_for('shl.view_items', list_name=list_name))
     try:
-        shl_list=basket.view_item(list_name=list_name)
+        shl_list = basket.view_item(list_name=list_name)
     except Exception as e:
         flash(str(e), 'danger')
         return redirect(url_for('shl.view_items', list_name=list_name))
     try:
-        lists=basket.view_list()
+        lists = basket.view_list()
     except Exception as e:
         flash(str(e), 'danger')
     return render_template('each_list.html', shl_list=shl_list, lists=lists,
@@ -132,3 +132,7 @@ def delete_item(list_name, item_name):
     except ValueError as error:
         flash(str(error), 'danger')
     return redirect(url_for('shl.view_items', list_name=list_name))
+
+@shl.route('/terms')
+def terms():
+    return render_template('info.terms')
