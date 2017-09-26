@@ -43,8 +43,6 @@
 
 
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" class="disabled">Profile</a></li>
-                            <li><a href="#" class="">logs</a></li>
                             <li class="divider"></li>
                             <li><a href="{{ url_for('shl.contact') }}"> contact us</a></li>
                             <li><a href="{{ url_for('shl.about') }}"> About</a></li>
@@ -114,7 +112,7 @@
                         <td> {{ shl_list.items[counter].quantity }}</td>
                         <td> {{ shl_list.items[counter].price }}</td>
                         <td> {{ shl_list.items[counter].description }}</td>
-                        <td> {{ shl_list.items[counter].item_total }}</td>
+                        <td> {{ shl_list.items[counter].amount }}</td>
                         <td><a href="#" data-toggle="modal" data-target="#deleteItemModal"><span
                                 class="glyphicon glyphicon-trash"></span> delete </a></td>
                         <td><a href="#" data-toggle="modal" data-target="#modifyItemModal"><span
