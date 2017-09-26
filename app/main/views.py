@@ -1,14 +1,14 @@
 from flask import render_template, session, redirect, url_for, flash
 from . import shl
 from flask_login import login_required
-from ..models import User, Basket
+from ..models import Basket
 from .forms import AddListForm, ModifyForm, AddItemForm, ModifyItemForm
 
 basket = Basket()
 
 
 # ROUTES
-@shl.route('/', methods=['GET', 'POST'])
+@shl.route('/list/', methods=['GET', 'POST'])
 def index():
     # create list functionality
     add_list_form = AddListForm()
@@ -43,6 +43,13 @@ def index():
     return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form, modif_form=modify_form)
 
 
+
+@shl.route('/')
+def home():
+    """This should be the first page that a person sees once logged in or logged out"""
+    return render_template('info/landing_page.html')
+
+
 @shl.route('/delete_list/<name>')
 @login_required
 def delete_list(name):
@@ -73,7 +80,7 @@ def view_items(list_name):
     """ Returns the single shopping list view"""
     form = AddItemForm()
     mod_form = ModifyItemForm()
-    
+
     if mod_form.validate_on_submit():
         # we extract both the old and the new values, compare and if not same change them
         item_name = mod_form.name.data
