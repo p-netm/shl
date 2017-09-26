@@ -16,6 +16,15 @@ body{
     text-decoration: none;
     border-radius: 50%;
 }
+.terms-and-conditions {
+    color: #561905;
+    text-decoration: underline;
+    font-style: italic;
+}
+.scroll-div {
+    overflow-y: scroll;
+    max-height: 90vh;
+}
 span.list_details {
     font-size: smaller;
     colour: #ea5809;
