@@ -21,7 +21,7 @@ def login():
             login_user(logging_in_user)
             return redirect(url_for('shl.index') or request.args.get('next'))
         else:
-            flash('invalid email or password', 'error')
+            flash('invalid email or password', 'danger')
     return render_template('login.html', form=login_form)
 
 
@@ -44,7 +44,7 @@ def register():
         try:
             gear.add_user(email=email, password=passcode, name=name, user_name=user_name)
         except Exception as error:
-            flash('{}'. format(error), 'error')
+            flash(str(error), 'danger')
             return render_template('register.html', form=reg_form)
         flash('You have been successfully registered', 'success')
         return redirect(url_for('auth.login'))
