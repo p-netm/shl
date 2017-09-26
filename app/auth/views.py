@@ -29,8 +29,7 @@ def login():
 @login_required
 def logout():
     logout_user()  # removes and resets a user session
-    flash('GOODBYE', 'info')
-    return render_template('info.landing_page.html')
+    return render_template('info/landing_page.html')
 
 
 @auth.route('/register', methods=['POST', 'GET'])

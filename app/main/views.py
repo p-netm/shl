@@ -73,20 +73,7 @@ def view_items(list_name):
     """ Returns the single shopping list view"""
     form = AddItemForm()
     mod_form = ModifyItemForm()
-    if form.validate_on_submit():
-        # we add item with details from form
-        item_name = form.name.data
-        quantity = form.quantity.data
-        price = form.price.data
-        description = form.description.data
-        try:
-            basket.add_item(list_name, item_name, quantity, price, description, author=session['user_id'])
-        except ValueError as error:
-            flash(str(error), 'danger')
-            return redirect(url_for('shl.view_items', list_name=list_name))
-        flash('item added successfully', 'success')
-        return redirect(url_for('shl.view_items', list_name=list_name))
-
+    
     if mod_form.validate_on_submit():
         # we extract both the old and the new values, compare and if not same change them
         item_name = mod_form.name.data
@@ -111,8 +98,25 @@ def view_items(list_name):
         lists = basket.view_list()
     except Exception as e:
         flash(str(e), 'danger')
+
+    if form.validate_on_submit():
+        # we add item with details from form
+        item_name = form.name.data
+        quantity = form.quantity.data
+        price = form.price.data
+        description = form.description.data
+        try:
+            basket.add_item(list_name, item_name, quantity, price, description, author=session['user_id'])
+        except ValueError as error:
+            flash(str(error), 'danger')
+            return redirect(url_for('shl.view_items', list_name=list_name))
+        flash('item added successfully', 'success')
+        return redirect(url_for('shl.view_items', list_name=list_name))
+
     return render_template('each_list.html', shl_list=shl_list, lists=lists,
                            form=form, mod_form=mod_form, name=list_name)
+
+
 
 
 @shl.route('/list/<list_name>')
@@ -135,4 +139,4 @@ def delete_item(list_name, item_name):
 
 @shl.route('/terms')
 def terms():
-    return render_template('info.terms')
+    return render_template('info/terms.html')
