@@ -49,13 +49,13 @@ class User(UserMixin, object):
 class ShoppingList(object):
     """ Creates an instance of a list"""
 
-    def __init__(self, name):
+    def __init__(self, name, author=None):
         if isinstance(name, str) or type(name) == int:
             self.name = name
         else:
             raise ValueError('The shopping list name can only be a string or integer')
 
-        self.author = None
+        self.author = author
         self.date_created = datetime.utcnow()
         self.date_last_modified = datetime.utcnow()
         self.items = []
@@ -65,7 +65,7 @@ class ShoppingList(object):
 class Item(object):
     """ creates instance of items to be added to the item list in the shopping list object"""
 
-    def __init__(self, name, quantity, price, description=None):
+    def __init__(self, name, quantity, price, description=None, author=None):
         if not isinstance(name, str):
             raise ValueError()
         if not isinstance(quantity, str):
@@ -87,7 +87,7 @@ class Item(object):
         self.name = name
         self.quantity = quantity
         self.price = price
-        self.author = None
+        self.author = author
         self.date_added = datetime.utcnow()
         self.date_last_modified = datetime.utcnow()
         self.description = description
@@ -272,7 +272,7 @@ class Basket(object):
                         temp_lists.append(list_)
             return temp_lists
         raise Exception('Unkown sort configuration')
-        return []
+
 
     def add_item(self,  list_name, item_name, quantity, price, description=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
