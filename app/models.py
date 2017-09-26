@@ -178,7 +178,7 @@ class Basket(object):
             self.shopping_lists.append(list_obj)
             self.lists_name_set.add(list_obj.name.capitalize())
         else:
-            raise ValueError('the name is already in use')
+            raise ValueError('the name {} is already in use'.format(name))
         return self.shopping_lists
 
     def name_checker(self, name):
@@ -259,6 +259,7 @@ class Basket(object):
                     if attr == list_.date_last_modified:
                         temp_lists.append(list_)
             return temp_lists
+        raise Exception('Unkown sort configuration')
         return []
 
     def add_item(self,  list_name, item_name, quantity, price, description=None):

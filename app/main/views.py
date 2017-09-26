@@ -15,16 +15,23 @@ def index():
     modify_form = ModifyForm()
     if add_list_form.validate_on_submit():
         name = add_list_form.name.data
-        basket.create_list(name)
+        try:
+            basket.create_list(name)
+        except ValueError as error:
+            flash("{}".format(error), 'error')
+            return redirect(url_for('shl.index'))
         return redirect(url_for('shl.index'))
     if modify_form.validate_on_submit():
         name = modify_form.name.data
         old_name = modify_form.old_name.data
         basket.modify_list(name=old_name, new_name=name)
         return redirect(url_for('shl.index'))
-    lists = basket.view_list()  # lists has a list of list objects
+    try:
+        lists = basket.view_list()  # lists has a list of list objects
+    except Exception as e:
+        flash("{}".format(e), 'error')
     if not len(lists):
-        flash("Seems like you currently have no list, click on the add_list link to get started", 'info')
+        flash("Seems like you currently have no lists, click on the add_list link to get started", 'info')
     return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form, modif_form=modify_form)
 
 
@@ -33,7 +40,10 @@ def index():
 def delete_list(name):
     """Here we will not use a form but rather a dynamic url that offers a parameter that
     we can use to identify a list-> like say the name of the list"""
-    basket.delete_list(name)
+    try:
+        basket.delete_list(name)
+    except ValueError as error:
+        flash("".format(error), 'error')
     return redirect(url_for('shl.index'))
 
 
@@ -61,8 +71,12 @@ def view_items(list_name):
         quantity = form.quantity.data
         price = form.price.data
         description = form.description.data
-        basket.add_item(list_name, item_name, quantity, price, description)
-        flash('item added succesfully', 'success')
+        try:
+            basket.add_item(list_name, item_name, quantity, price, description)
+        except ValueError as error:
+            flash("{}".format(error), 'error')
+            return redirect(url_for('shl.view_items', list_name=list_name))
+        flash('item added successfully', 'success')
         return redirect(url_for('shl.view_items', list_name=list_name))
 
     if mod_form.validate_on_submit():
@@ -77,9 +91,19 @@ def view_items(list_name):
                            description=description, quantity=quantity)
         except Exception as error:
             flash(error, 'error')
+            return redirect(url_for('shl.view_items', list_name=list_name))
         flash('item modified successfully', 'success')
         return redirect(url_for('shl.view_items', list_name=list_name))
-    return render_template('each_list.html', shl_list=basket.view_item(list_name=list_name), lists=basket.view_list(),
+    try:
+        shl_list=basket.view_item(list_name=list_name)
+    except Exception as e:
+        flash("{}".format(e), 'error')
+        return redirect(url_for('shl.view_items', list_name=list_name))
+    try:
+        lists=basket.view_list()
+    except Exception as e:
+        flash("".format(e), 'error')
+    return render_template('each_list.html', shl_list=shl_list, lists=lists,
                            form=form, mod_form=mod_form, name=list_name)
 
 
@@ -95,5 +119,8 @@ def edit_list():
 def delete_item(list_name, item_name):
     """ Extract the two names: list name and item_name
     delete the specified item"""
-    basket.delete_item(item_name=item_name, list_name=list_name)
+    try:
+        basket.delete_item(item_name=item_name, list_name=list_name)
+    except ValueError as error:
+        flash("".format(error), 'error')
     return redirect(url_for('shl.view_items', list_name=list_name))
