@@ -49,13 +49,13 @@ class User(UserMixin, object):
 class ShoppingList(object):
     """ Creates an instance of a list"""
 
-    def __init__(self, name):
+    def __init__(self, name, author=None):
         if isinstance(name, str) or type(name) == int:
             self.name = name
         else:
             raise ValueError('The shopping list name can only be a string or integer')
 
-        self.author = None
+        self.author = author
         self.date_created = datetime.utcnow()
         self.date_last_modified = datetime.utcnow()
         self.items = []
@@ -65,7 +65,7 @@ class ShoppingList(object):
 class Item(object):
     """ creates instance of items to be added to the item list in the shopping list object"""
 
-    def __init__(self, name, quantity, price, description=None):
+    def __init__(self, name, quantity, price, description=None, author=None):
         if not isinstance(name, str):
             raise ValueError()
         if not isinstance(quantity, str):
@@ -87,7 +87,7 @@ class Item(object):
         self.name = name
         self.quantity = quantity
         self.price = price
-        self.author = None
+        self.author = author
         self.date_added = datetime.utcnow()
         self.date_last_modified = datetime.utcnow()
         self.description = description
@@ -162,39 +162,51 @@ class Basket(object):
 
     def __init__(self):
         self.shopping_lists = []
-        self.lists_name_set = set()
 
-    def create_list(self, name):
+    def create_list(self, name, author=None):
         """ input: a shopping-list name
         calls the shopping list constructor
         output: updated shopping_list else false"""
         if isinstance(name, str) or type(name) == int:
-            list_obj = ShoppingList(name)
+            list_obj = ShoppingList(name, author=author)
         else:
             raise ValueError('A list name can only contain alpha numeric characters')
         # we cant force a format style on users, but yet they should not be able to add lists with the same name
         name = name.strip()
         if self.name_checker(name):
             self.shopping_lists.append(list_obj)
-            self.lists_name_set.add(list_obj.name.capitalize())
+            self.get_lists_name_set()
         else:
-            raise ValueError('the name is already in use')
+            raise ValueError('the name {} is already in use'.format(name))
         return self.shopping_lists
+
+    def get_lists_name_set(self):
+        """ Returns a set that contains the names in the current shoppingLists lists"""
+        set_ = set()
+        for list in self.shopping_lists:
+            set_.add(list.name)
+        return set_
 
     def name_checker(self, name):
         """input: list_name
         returns true if the name is not already being used for another list else False"""
-        return name.capitalize() not in self.lists_name_set
+        names_set = self.get_lists_name_set()
+        for name_ in names_set:
+            if name_.capitalize() == name.capitalize():
+                return False
+        return True
 
     def modify_list(self, name, new_name=None):
         """input: name of list and the arguments to be changed
         output: returns new list"""
         # we can only modify the name of a list, for other attributes see modify_items()
         list_ = self.get_list_by_name(name)
-        if new_name and not self.name_checker(new_name):
+        if new_name and self.name_checker(new_name):
             list_.name = new_name
             list_.date_last_modified = datetime.utcnow()
-        return list_
+        else:
+            raise ValueError("Seems like you already have a list with that name")
+        return True
 
     def delete_list(self, name):
         """ input: name of list: retrieves list object with the fed in name and pop it
@@ -259,9 +271,10 @@ class Basket(object):
                     if attr == list_.date_last_modified:
                         temp_lists.append(list_)
             return temp_lists
-        return []
+        raise Exception('Unkown sort configuration')
 
-    def add_item(self,  list_name, item_name, quantity, price, description=None):
+
+    def add_item(self,  list_name, item_name, quantity, price, description=None, author=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
         and then adds the created item object to a list object with the fed in list_name
         output: the updated list"""
@@ -283,7 +296,7 @@ class Basket(object):
         if item_name in item_name_set:
             raise ValueError('Item with name {} already exists'. format(item_name))
 
-        item_obj = Item(item_name, quantity, price, description)
+        item_obj = Item(item_name, quantity, price=price, description=description, author=author)
         list_.items.append(item_obj)
 
         list_.total = self.set_total(list_).total

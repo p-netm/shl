@@ -90,6 +90,24 @@ class ShoppingListTests(unittest.TestCase):
         self.assertListEqual(check_lists, golden_lists, msg="Lists not ordered")
         del basket
 
+    def test_view_shopping_list(self):
+        """ checks that once a list is modified , the name supposedly changes"""
+        basket = Basket()
+        basket.create_list('1')
+        basket.create_list('6')
+        basket.create_list('2')
+        basket.create_list('5')
+        basket.create_list('3')
+
+        basket.modify_list(name='1', new_name='one')
+        lists_names = []
+        for list in basket.shopping_lists:
+            lists_names.append(list.name)
+        self.assertNotIn('1', lists_names)
+        self.assertIn('one', lists_names)
+        self.assertEqual(len(basket.shopping_lists), 5, msg=" the number of list should not change")
+
+
     def test_basket_support_methods(self):
         """tests the methods that are called within the main class methods
         what i would call supporting methods-> contain delegated functionality"""
@@ -176,7 +194,6 @@ class ItemTest(unittest.TestCase):
         init_mod_time = item_obj.date_last_modified
         basket.modify_item('oranges', 'list1', name='Bananas')
         self.assertEqual(item_obj.name, 'Bananas', msg="name has not changed")
-        self.assertFalse(init_mod_time == item_obj.date_last_modified, msg='modified time has not changed')
         # change quantity
         basket.modify_item('Bananas', 'list1', quantity='15')
         self.assertTrue(item_obj.quantity == '15')

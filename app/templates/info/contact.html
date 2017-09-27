@@ -15,21 +15,23 @@
 {% block content %}
 <!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
 <div class="container">
-    <div class="jumbotron">
+
+    <div class="section-land contact ">
         {% block jumbo_header %}
-        <div class="page-header">
-            <h1>find me</h1>
+        <div class="text-center">
+            <h3> Find Me:</h3>
         </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         {% endblock %}
         {% block jumbo_info %}
-        <p>
+        <div class="contact-flex">
             <!--links to fb, linked in, twitter and email-->
             <!-- Add font awesome icons -->
-            <a href="https://www.facebook.com/" class="fa fa-facebook"></a>
-            <a href="https://twitter.com/p_netm" class="fa fa-twitter"></a>
-            <a href="https://www.linkedin.com/in/peter-muriuki-094b8411a/" class="fa fa-linkedin-square"></a>
+            <div><a href="https://www.facebook.com/peter.muriuki.167"><img class="logos" src="{{ url_for('static', filename='media/facebook.png') }}"></a></div> &nbsp;&nbsp;&nbsp;
+            <div><a href="https://twitter.com/p_netm"><img class="logos" src="{{ url_for('static', filename='media/twitter.png') }}"></a></div> &nbsp;&nbsp;&nbsp;
+            <div><a href="https://www.linkedin.com/in/peter-muriuki-094b8411a/"><img class="logos" src="{{ url_for('static', filename='media/linkedin.png') }}"></a></div> &nbsp;&nbsp;&nbsp;
 
-        </p>
+        </div>
         {% endblock %}
     </div>
 
