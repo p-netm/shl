@@ -168,7 +168,7 @@ class Basket(object):
         calls the shopping list constructor
         output: updated shopping_list else false"""
         if isinstance(name, str) or type(name) == int:
-            list_obj = ShoppingList(name)
+            list_obj = ShoppingList(name, author=author)
         else:
             raise ValueError('A list name can only contain alpha numeric characters')
         # we cant force a format style on users, but yet they should not be able to add lists with the same name
@@ -296,7 +296,7 @@ class Basket(object):
         if item_name in item_name_set:
             raise ValueError('Item with name {} already exists'. format(item_name))
 
-        item_obj = Item(item_name, quantity, price, description)
+        item_obj = Item(item_name, quantity, price=price, description=description, author=author)
         list_.items.append(item_obj)
 
         list_.total = self.set_total(list_).total
