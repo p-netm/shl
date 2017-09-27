@@ -1,22 +1,22 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField, FloatField
 from wtforms.validators import DataRequired, input_required
 
 
-class AddListForm(Form):
+class AddListForm(FlaskForm):
     """ Used to model the registration form"""
     name = StringField('', validators=[input_required(), DataRequired()])
     add = SubmitField('add_list')
 
 
-class ModifyForm(Form):
+class ModifyForm(FlaskForm):
     """ Used to model the registration form"""
     name = StringField('', validators=[input_required(), DataRequired()])
     old_name = StringField('', validators=[input_required(), DataRequired()])
     add = SubmitField('modify_list')
 
 
-class AddItemForm(Form):
+class AddItemForm(FlaskForm):
     """ folllows an almost similar layout as add list form. it will be used to add items to list"""
     list_name = StringField('', validators=[input_required(), DataRequired()])
     name = StringField('', validators=[input_required(), DataRequired()])
@@ -26,7 +26,7 @@ class AddItemForm(Form):
     add = SubmitField('add_item')
 
 
-class ModifyItemForm(Form):
+class ModifyItemForm(FlaskForm):
     list_name = StringField('', validators=[input_required(), DataRequired()])
     old_name = StringField('', validators=[input_required(), DataRequired()])
     old_quantity = StringField('', validators=[input_required(), DataRequired()])
