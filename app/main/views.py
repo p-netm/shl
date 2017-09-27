@@ -8,6 +8,7 @@ basket = Basket()
 
 
 # ROUTES
+@login_required
 @shl.route('/list/', methods=['GET', 'POST'])
 def index():
     # create list functionality

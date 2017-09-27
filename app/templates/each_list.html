@@ -71,7 +71,7 @@
       {% endif %}
     {% endwith %}
     <div class="container bars row">
-        <div class="my_list_side_bar col-lg-3 col-md-3">
+        <div class="my_list_side_bar col-lg-3 col-md-3 col-sm-0 col-xs-0">
             <h3> My lists</h3>
             {% for list in lists %}
             <a class="a-panel" href="{{ url_for('shl.view_items', list_name=list.name) }}">
@@ -207,7 +207,10 @@
             </div>
             <div class="text-center">
                 <a href="{{ url_for('shl.delete_list', name=shl_list.name, _external=True) }}" class="btn btn-default">
-                    DELETE LIST </a>
+                    DELETE LIST </a> &nbsp;&nbsp;&nbsp;
+
+                <a href="{{ url_for('shl.index', _external=True) }}" class="btn btn-info">
+                    BACK </a
             </div>
         </div>
 
