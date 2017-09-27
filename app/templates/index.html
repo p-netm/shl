@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Shopping-list.com home </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="media/favicon.ico">
+    <link rel="icon" type='image/x-icon' href="{{ url_for('static', filename='media/favicon.ico') }}">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -15,12 +15,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- My custom css file-->
-    <link rel="stylesheet" href="style/css/shl.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css') }}">
 </head>
 <body>
 
 <nav class="navbar navbar-inverse">
-    <div class="container-fluid">
+    <div class="container-fluid with-nav-flex">
         <div class="navbar-header">
             <!-- review-->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -29,173 +29,205 @@
                 <span class="icon-bar"></span>
             </button>
             <!--/review -->
-            <a class="navbar-brand" href="#">SHOPPING LIST.COM</a>
+            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
         </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-plus"></span> Add list</a></li>
+        <div class="nav-flex">
 
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user"></span> Account
-                    <span class="caret"></span></a>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_authenticated %}
+                    <li>
+                        <a class="pointer" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus"></span>Add
+                            list</a>
+                    </li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span> Account
+                        <span class="caret"></span></a>
 
 
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" class="disabled">Profile</a></li>
-                        <li><a href="#" class="">logs</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#"> contact us</a></li>
-                        <li><a href="#"> About</a></li>
-                    </ul>
-                </li>
+                        <ul class="dropdown-menu" role="menu">
 
-            </ul>
+                            <li><a href="{{ url_for('shl.contact') }}"> Contact us</a></li>
+                            <li><a href="{{ url_for('shl.about') }}"> About </a></li>
+                            <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li><a  href="{{ url_for('auth.login') }}">Log in</a></li>
+                    <li><a href="{{ url_for('auth.register') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+                    </li>
+                    <li><a href="{{ url_for('shl.contact') }}"><span class="glyphicon glyphicon-envelope"></span>
+                        Contact us</a></li>
+                    <li><a href="{{ url_for('shl.about') }}"><span class="glyphicon glyphicon-exclamation-sign"></span>
+                        About </a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
         </div>
+
     </div>
 </nav>
 
 <div class="body-page">
     <!--The bod page will be primarily used to apply the background image , color and transparency-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
     <div class="container-fluid">
+
+        {% for counter in range(0, lists_len) %}
+        {% if (counter + 1) % 4 == 0 %}
         <div class="row">
+            {% endif %}
+
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <!-- clickable cards-> remove the text decoration from text in panels-->
-
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="#">List Name</a>
+                        <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}">{{
+                            lists[counter].name }}</a>
                     </div>
-                    <a href="#" class="unlink">
+                    <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}"
+                       class="unlink">
                         <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
+                            <h5> date_created <span class="list_details">{{ moment(lists[counter].date_created).format('LLL') }} </span>
+                            </h5>
+                            <h5><span class="list_details">{{ (lists[counter].items)| length}} </span> items</h5>
+                            <h5> Total Est. : <span class="list_details"> {{ lists[counter].total }} </span></h5>
+                            <h5> Last modified: <span class="list_details">{{ moment(lists[counter].date_last_modified).format('LLL') }} </span>
+                            </h5>
                         </div>
                     </a>
 
                     <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
+                        <a data-toggle="modal" data-target="#del{{counter}}"><span
+                                class="glyphicon glyphicon-trash">delete</span></a>
                         &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
 
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
+
+                        <!-- delete Modal -->
+                        <div id="del{{counter}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Confirm delete action</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}"
+                                           class="btn btn-default">
+                                            <span class="glyphicon glyphicon-trash">delete</span></a>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Return
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </a>
 
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
+                        <a data-toggle="modal" data-target="#{{counter}}"><span
+                                class="glyphicon glyphicon-pencil">edit</span></a>
+                                &nbsp;&nbsp;&nbsp;
+
+                        <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}">Add items</a>
+
+
+                        <!-- delete Modal -->
+                        <div id="{{ counter }}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Modify list details</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="from-inline" method="POST"
+                                              action="{{  url_for('shl.index', _external=True) }}">
+                                            {{ modif_form.csrf_token }}
+                                            {{ modif_form.old_name(class='form-control hidden',
+                                            value=lists[counter].name )}}
+                                            <div class="input-group">
+
+                                                {{ modif_form.name(class='form-control', placeholder=
+                                                lists[counter].name) }}
+
+                                                <div class="input-group-btn">
+                                                    {{ modif_form.add(class='btn btn-default') }}
+
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Return
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </a>
 
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
+
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
 
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
             </div>
+            {% if (counter + 1) % 4 == 0 %}
         </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <!-- clickable cards-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="#">List Name</a>
-                    </div>
-                    <a href="#" class="unlink">
-                        <div class="panel-body">
-                            <h5> date created</h5>
-                            <h5> 9 items</h5>
-                            <h5> Estimated price: 2500</h5>
-                            <h5> Last modified</h5>
-                        </div>
-                    </a>
-
-                    <div class="panel-footer text-center">
-                        <a href="#"><span class="glyphicon glyphicon-trash">delete</span></a>
-                        &nbsp;&nbsp;
-                        <a href="#"><span class="glyphicon glyphicon-pencil">edit</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endif %}
+        {% endfor %}
     </div>
 </div>
+</div>
+{{ moment.include_moment() }}
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create a list name</h4>
+            </div>
+            <div class="modal-body">
+                <form class="from-inline" method="POST" action="{{ url_for('shl.index', _external=True) }}">
+                    <div class="input-group">
+                        {{ form.csrf_token }}
+                        {{ form.name(class='form-control', placeholder= 'list-name') }}
+
+                        <div class="input-group-btn">
+                            {{ form.add(class='btn btn-default') }}
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
 </body>
 </html>

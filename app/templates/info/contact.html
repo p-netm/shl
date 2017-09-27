@@ -1,0 +1,40 @@
+{% extends "info/info.html" %}
+{% block head %}
+{{ super() }}
+{% block title %}<title> Shopping list contact</title>{% endblock %}
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% endblock %}
+
+{% block body %}
+
+{% block navigation %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<!--put a centered jumbotron 3/4s of the page with opacity and a header of shl-->
+<div class="container">
+
+    <div class="section-land contact ">
+        {% block jumbo_header %}
+        <div class="text-center">
+            <h3> Find Me:</h3>
+        </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {% endblock %}
+        {% block jumbo_info %}
+        <div class="contact-flex">
+            <!--links to fb, linked in, twitter and email-->
+            <!-- Add font awesome icons -->
+            <div><a href="https://www.facebook.com/peter.muriuki.167"><img class="logos" src="{{ url_for('static', filename='media/facebook.png') }}"></a></div> &nbsp;&nbsp;&nbsp;
+            <div><a href="https://twitter.com/p_netm"><img class="logos" src="{{ url_for('static', filename='media/twitter.png') }}"></a></div> &nbsp;&nbsp;&nbsp;
+            <div><a href="https://www.linkedin.com/in/peter-muriuki-094b8411a/"><img class="logos" src="{{ url_for('static', filename='media/linkedin.png') }}"></a></div> &nbsp;&nbsp;&nbsp;
+
+        </div>
+        {% endblock %}
+    </div>
+
+</div>
+{% endblock %}
+{% endblock %}

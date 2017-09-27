@@ -1,1 +1,7 @@
-__author__ = 'Sudo Pnet'
+from flask import Blueprint
+
+
+shl = Blueprint('shl', __name__)
+
+
+from . import views, errors

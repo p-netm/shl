@@ -1,6 +1,6 @@
 # virtual envnironment files
 /shlEnv/
-
+/designs/wireframes/Thumbs.db
 
 
 # Byte-compiled / optimized / DLL files
@@ -105,3 +105,9 @@ ENV/
 # mypy
 .mypy_cache/
 
+/notes.py
+/.coveralls.yml
+/testit.py
+/.env
+/app/templates/testit2.html
+/app/templates/testit.html
