@@ -140,6 +140,9 @@
 
                         <a data-toggle="modal" data-target="#{{counter}}"><span
                                 class="glyphicon glyphicon-pencil">edit</span></a>
+                                &nbsp;&nbsp;&nbsp;
+
+                        <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}">Add items</a>
 
 
                         <!-- delete Modal -->
