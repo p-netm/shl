@@ -49,7 +49,7 @@ class User(UserMixin, object):
 class ShoppingList(object):
     """ Creates an instance of a list"""
 
-    def __init__(self, name, author=None):
+    def __init__(self, name, author):
         if isinstance(name, str) or type(name) == int:
             self.name = name
         else:
@@ -123,6 +123,15 @@ class Gears(object):
                 return user
         return None
 
+    def if_user_exists(self, link_name):
+        """Checks if there is a registered user using the username given in the link_name
+        it will return True if Found and else False"""
+        for user in self.user_list:
+            if user.user_name == link_name:
+                
+
+
+
     def add_user(self, email, password, name, user_name):
         """ input: data to be stored: email, hashed password
         output returns True upon successful termination
@@ -163,7 +172,7 @@ class Basket(object):
     def __init__(self):
         self.shopping_lists = []
 
-    def create_list(self, name, author=None):
+    def create_list(self, name, author):
         """ input: a shopping-list name
         calls the shopping list constructor
         output: updated shopping_list else false"""
@@ -179,6 +188,15 @@ class Basket(object):
         else:
             raise ValueError('the name {} is already in use'.format(name))
         return self.shopping_lists
+
+    def check_permission(self, object, link_name):
+        """Input: an object with an author field
+        a link name containing the name in the url.
+        output: return TRue if user with link_name has modification permission"""
+        if object.author != link_name:
+            return False
+        return True
+
 
     def get_lists_name_set(self):
         """ Returns a set that contains the names in the current shoppingLists lists"""
@@ -196,7 +214,7 @@ class Basket(object):
                 return False
         return True
 
-    def modify_list(self, name, new_name=None):
+    def modify_list(self, name, link_name, new_name=None):
         """input: name of list and the arguments to be changed
         output: returns new list"""
         # we can only modify the name of a list, for other attributes see modify_items()
@@ -226,17 +244,18 @@ class Basket(object):
         else:
             raise ValueError('Shopping list with the name {} cannot be found'. format(name))
 
-    def view_list(self, sort='date_created', author=None):
+
+    def view_list(self, link_name, sort='date_created'):
         """ returns all the list sorted as per 3 list attributes: name, date created, date modified
         """
         # extract the attributes to a temp_list sort them then loop through shopping list
         # while arranging them
 
         filter_list = []
-        if author is not None:
+        if link_name is not None:
             for list_ in self.shopping_lists:
                 self.set_total(list_)
-                if list_.author == author:
+                if list_.author == link_name:
                     filter_list.append(list_)
         else:
             filter_list = self.shopping_lists
