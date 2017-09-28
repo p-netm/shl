@@ -1,4 +1,4 @@
-from flask import render_template, session, redirect, url_for, flash
+from flask import render_template, session, redirect, url_for, flash, request
 from . import shl
 from flask_login import login_required
 from ..models import Basket
@@ -15,6 +15,7 @@ def index(link_name):
     add_list_form = AddListForm()
     modify_form = ModifyForm()
 
+
     if modify_form.validate_on_submit():
         name = modify_form.name.data
         old_name = modify_form.old_name.data
@@ -29,7 +30,8 @@ def index(link_name):
         name = add_list_form.name.data
         public = modify_form.public.data
         try:
-            basket.create_list(name, author=session['user_id'], public=public)
+            token = basket.generate_token(list_name=name)
+            basket.create_list(name, author=session['user_id'], token=token, public=public)
         except ValueError as error:
             flash(str(error), 'danger')
             return redirect(url_for('shl.index', link_name=link_name))
@@ -147,6 +149,16 @@ def delete_item(link_name, list_name, item_name):
         flash(str(error), 'danger')
     return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
 
+
 @shl.route('/terms')
 def terms():
     return render_template('info/terms.html')
+
+
+@shl.route('/share')
+def share():
+    token = request.args.get('token')
+    list_name = basket.decodes_token(token=token)
+    list_ = basket.get_list_by_name(list_name)
+    return render_template('info/share.html', shl_list=list_)
+
