@@ -136,7 +136,7 @@ def edit_list():
     return redirect(url_for('shl.view_items'))
 
 
-@shl.route('<link_name>/list/<list_name>/<item_name>')
+@shl.route('/<link_name>/list/<list_name>/<item_name>')
 @login_required
 def delete_item(link_name, list_name, item_name):
     """ Extract the two names: list name and item_name
