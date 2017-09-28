@@ -18,6 +18,8 @@
 
     <!-- My custom css file-->
     <link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css') }}">
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
 </head>
 {% endblock %}
 {% block body %}
@@ -47,9 +49,6 @@
 
 
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" class="disabled">Profile</a></li>
-                        <li><a href="#" class="">logs</a></li>
-                        <li class="divider"></li>
                         <li><a href="{{ url_for('shl.contact') }}"> contact us</a></li>
                         <li><a href="{{ url_for('shl.about') }}"> About</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>

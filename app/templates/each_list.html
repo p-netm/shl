@@ -16,6 +16,8 @@
 
     <!-- My custom css file-->
     <link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css', _external=True) }}">
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
 </head>
 <body>
 
@@ -192,7 +194,7 @@
                                             <span class="glyphicon glyphicon-trash">delete</span></a>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Return
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Back
                                         </button>
                                     </div>
                                 </div>
@@ -212,7 +214,7 @@
             </div>
             <div class="text-center">
                 {% if link_name == session['user_id'] %}
-                <a href="{{ url_for('shl.delete_list', name=shl_list.name, _external=True) }}" class="btn btn-default">
+                <a href="{{ url_for('shl.delete_list', link_name=link_name, name=shl_list.name, _external=True) }}" class="btn btn-default">
                     DELETE LIST </a> &nbsp;&nbsp;&nbsp;
                 {% endif %}
 
@@ -250,7 +252,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">BACK</button>
             </div>
         </div>
 

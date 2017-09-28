@@ -136,7 +136,7 @@
                                         <h4 class="modal-title">Your share Link</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <span class=""> {{ url_for('shl.share', token=lists[counter].name, _external=true) }}</span>
+                                        <span class=""> {{ url_for('shl.share',link_name=link_name, token=lists[counter].name, _external=true) }}</span>
                                     </div>
                                     <div class="modal-footer text-center">
                                         <button type="button" class="btn btn-info" data-dismiss="modal">Back
@@ -146,16 +146,6 @@
 
                             </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -170,7 +160,7 @@
                                         <h4 class="modal-title">Confirm delete action</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}"
+                                        <a href="{{ url_for('shl.delete_list', link_name=link_name, name=lists[counter].name, _external=True) }}"
                                            class="btn btn-default">
                                             <span class="glyphicon glyphicon-trash">delete</span></a>
                                     </div>
