@@ -2,6 +2,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from . import login_manager
 from flask_login import UserMixin
 import re
+from itsdangerous import URLSafeSerializer as Serialize
 from _datetime import datetime
 
 
@@ -48,7 +49,7 @@ class User(UserMixin, object):
 class ShoppingList(object):
     """ Creates an instance of a list"""
 
-    def __init__(self, name, author, public=False):
+    def __init__(self, name, author, token, public=False):
         if isinstance(name, str) or type(name) == int:
             self.name = name
         else:
@@ -60,6 +61,7 @@ class ShoppingList(object):
         self.items = []
         self.total = 0
         self.public = public
+        self.token = token
 
 
 class Item(object):
@@ -175,12 +177,12 @@ class Basket(object):
         self.shopping_lists = []
         self.gears = Gears()
 
-    def create_list(self, name, author, public=False):
+    def create_list(self, name, author, token, public=False):
         """ input: a shopping-list name
         calls the shopping list constructor
         output: updated shopping_list else false"""
         if isinstance(name, str) or type(name) == int:
-            list_obj = ShoppingList(name, author=author, public=public)
+            list_obj = ShoppingList(name, author=author, token=token, public=public)
         else:
             raise ValueError('A list name can only contain alpha numeric characters')
         # we cant force a format style on users, but yet they should not be able to add lists with the same name
@@ -402,7 +404,6 @@ class Basket(object):
             return shl_list
         return shl_list
 
-
     def set_total(self, list_):
         """
         input: a list
@@ -418,3 +419,15 @@ class Basket(object):
             list_total += item_total
         list_.total = list_total
         return list_
+
+    def generate_token(self, list_name):
+
+            # means that we are generating a token
+        s = Serialize('asadf crtvad acf')
+        token = s.dumps(list_name)
+        return token
+
+    def decodes_token(self, token):
+        name_of_list = token.loads()
+        # we retrieve the list name serialized in the tken and return it
+        return name_of_list
