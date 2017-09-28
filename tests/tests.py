@@ -59,7 +59,7 @@ class ShoppingListTests(unittest.TestCase):
         basket.create_list('1', 'Peter', 'faedddas')
         basket.create_list('2', 'Peter', 'faedddas')
         basket.create_list('3', 'Peter', 'faedsdas')
-        new_shopping_lists = basket.delete_list('2')
+        new_shopping_lists = basket.delete_list('Peter','2')
         current_value = len(basket.shopping_lists)
         self.assertTrue(current_value, 2)
         # create a list of the shopping_lists names and confirm the deleted list's name
@@ -99,10 +99,10 @@ class ShoppingListTests(unittest.TestCase):
         basket.create_list('5', 'Peter', 'faedas')
         basket.create_list('3', 'Peter', 'faedas')
 
-        basket.modify_list(name='1', new_name='one')
+        basket.modify_list(name='1', link_name='Peter', new_name='one')
         lists_names = []
-        for list in basket.shopping_lists:
-            lists_names.append(list.name)
+        for list_ in basket.shopping_lists:
+            lists_names.append(list_.name)
         self.assertNotIn('1', lists_names)
         self.assertIn('one', lists_names)
         self.assertEqual(len(basket.shopping_lists), 5, msg=" the number of list should not change")
@@ -114,17 +114,21 @@ class ShoppingListTests(unittest.TestCase):
         basket = Basket()
         # test name_checker
         basket.create_list('5', 'Peter', 'faedas')
-        self.assertFalse(basket.name_checker('5'))
-        self.assertTrue(basket.name_checker('another_list'))
+        self.assertFalse(basket.name_checker('Peter', '5'))
+        self.assertTrue(basket.name_checker('Peter', 'another_list'))
 
         # get_list_by_name
         basket.create_list('3', 'Peter', 'faedas')
-        response_list = basket.get_list_by_name('3')
+        response_list = basket.get_list_by_name('3', 'Peter')
         self.assertTrue(response_list)
         self.assertTrue(type(response_list) == ShoppingList)
         self.assertTrue(response_list.name == '3')
         with self.assertRaises(ValueError):
-            response_list = basket.get_list_by_name('error')
+            response_list = basket.get_list_by_name('error', 'Peter')
+        token = basket.generate_token(response_list.name)
+        print(token)
+        list_name = basket.decodes_token(token)
+        self.assertTrue(list_name == response_list.name)
         del basket
 
 
@@ -180,29 +184,29 @@ class ItemTest(unittest.TestCase):
 
     def test_basket_add_item_function(self):
         """Check for data validation, created items are added to correct list"""
-        self.basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
-        list_ = self.basket.get_list_by_name('list1')
+        self.basket.add_item('Peter', 'list1', 'oranges', '20', 25.00, 'succulent')
+        list_ = self.basket.get_list_by_name('list1', 'Peter')
         self.assertEqual(len(list_.items), 1)
 
     def test_basket_modify_item(self):
         """ Tries and checks that an item data is changed after its called"""
         basket = Basket()
         basket.create_list('list1', 'Peter', 'faedas')
-        basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
+        basket.add_item('Peter', 'list1', 'oranges', '20', 25.00, 'succulent')
         #check modification time changes
         item_obj = basket.shopping_lists[0].items[0]
         init_mod_time = item_obj.date_last_modified
-        basket.modify_item('oranges', 'list1', name='Bananas')
+        basket.modify_item('Peter', 'oranges', 'list1', name='Bananas')
         self.assertEqual(item_obj.name, 'Bananas', msg="name has not changed")
         # change quantity
-        basket.modify_item('Bananas', 'list1', quantity='15')
+        basket.modify_item('Peter', 'Bananas', 'list1', quantity='15')
         self.assertTrue(item_obj.quantity == '15')
         init_price = item_obj.price
-        basket.modify_item('Bananas', 'list1', price=3.23)
+        basket.modify_item('Peter', 'Bananas', 'list1', price=3.23)
         self.assertFalse(init_price == item_obj.price)
         self.assertTrue(item_obj.price == 3.23)
         inti_desc = item_obj.description
-        basket.modify_item('Bananas', 'list1', description="juicy")
+        basket.modify_item('Peter', 'Bananas', 'list1', description="juicy")
         self.assertFalse(item_obj.description == inti_desc)
         self.assertTrue(item_obj.description == "juicy")
 
@@ -210,8 +214,8 @@ class ItemTest(unittest.TestCase):
         """check error raised if item not found"""
         basket = Basket()
         basket.create_list('list1', 'Peter', 'faedas')
-        basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
-        response = basket.get_item_by_name(item_name='oranges', list_name='list1')
+        basket.add_item('Peter', 'list1',  'oranges', '20', 25.00, 'succulent')
+        response = basket.get_item_by_name(link_name='Peter', item_name='oranges', list_name='list1')
         self.assertTrue(response)
         self.assertTrue(response.name == 'oranges')
         self.assertEqual(type(response), Item)
@@ -222,19 +226,19 @@ class ItemTest(unittest.TestCase):
         """ checks that an item ceases to exist after being deleted"""
         basket = Basket()
         basket.create_list('list1', 'Peter', 'faedas')
-        basket.add_item('list1', 'oranges', '20', 25.00, 'succulent')
-        response = basket.delete_item('oranges', 'list1')
+        basket.add_item('Peter', 'list1', 'oranges', '20', 25.00, 'succulent')
+        response = basket.delete_item('Peter', 'oranges', 'list1')
         self.assertFalse(len(response.items))
 
     def test_view_item_sorted_list(self):
         """Checks if view_ item does sort """
         basket = Basket()
         basket.create_list('list1', 'Peter', 'faedas')
-        basket.add_item('list1', 'oranges', '2', 25.00, 'succulent')
-        basket.add_item('list1', 'mangoes', '10', 25.00, 'succulent')
-        basket.add_item('list1', 'apples', '15', 25.00, 'succulent')
-        basket.add_item('list1', 'peach', '7', 25.00, 'succulent')
-        basket.add_item('list1', 'passion', '16', 25.00, 'succulent')
+        basket.add_item('Peter', 'list1', 'oranges', '2', 25.00, 'succulent')
+        basket.add_item('Peter', 'list1', 'mangoes', '10', 25.00, 'succulent')
+        basket.add_item('Peter', 'list1', 'apples', '15', 25.00, 'succulent')
+        basket.add_item('Peter', 'list1', 'peach', '7', 25.00, 'succulent')
+        basket.add_item('Peter', 'list1', 'passion', '16', 25.00, 'succulent')
 
 
 class GearsTests(unittest.TestCase):
