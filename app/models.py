@@ -37,19 +37,18 @@ class User(UserMixin, object):
         pass
 
     def set_password(self, pass_word):
-        """"""
-        self.hashed_pass = pass_word
+        """ generates an encrypted hash key from a users password"""
+        self.hashed_pass = generate_password_hash(pass_word)
 
-    def check_password(self, pass_word):
+    def check_password(self, pass_word, hashed_pass):
         """ returns True if fed in password, has the same hash as the users password else False"""
-        return self.hashed_pass == pass_word
-        # change implementation to werkzeug after installing db
+        return check_password_hash(hashed_pass, pass_word)
 
 
 class ShoppingList(object):
     """ Creates an instance of a list"""
 
-    def __init__(self, name, author):
+    def __init__(self, name, author, public=False):
         if isinstance(name, str) or type(name) == int:
             self.name = name
         else:
@@ -60,12 +59,13 @@ class ShoppingList(object):
         self.date_last_modified = datetime.utcnow()
         self.items = []
         self.total = 0
+        self.public = public
 
 
 class Item(object):
     """ creates instance of items to be added to the item list in the shopping list object"""
 
-    def __init__(self, name, quantity, price, description=None, author=None):
+    def __init__(self, name, quantity, price, description=None, author=None, public=False):
         if not isinstance(name, str):
             raise ValueError()
         if not isinstance(quantity, str):
@@ -92,6 +92,7 @@ class Item(object):
         self.date_last_modified = datetime.utcnow()
         self.description = description
         self.amount = 0
+        self.public = public
 
 
 @login_manager.user_loader
@@ -128,9 +129,10 @@ class Gears(object):
         it will return True if Found and else False"""
         for user in self.user_list:
             if user.user_name == link_name:
+                # means that the object belongs to the logged in user
+                return True
+        return False
                 
-
-
 
     def add_user(self, email, password, name, user_name):
         """ input: data to be stored: email, hashed password
@@ -171,13 +173,14 @@ class Basket(object):
 
     def __init__(self):
         self.shopping_lists = []
+        self.gears = Gears()
 
-    def create_list(self, name, author):
+    def create_list(self, name, author, public=False):
         """ input: a shopping-list name
         calls the shopping list constructor
         output: updated shopping_list else false"""
         if isinstance(name, str) or type(name) == int:
-            list_obj = ShoppingList(name, author=author)
+            list_obj = ShoppingList(name, author=author, public=public)
         else:
             raise ValueError('A list name can only contain alpha numeric characters')
         # we cant force a format style on users, but yet they should not be able to add lists with the same name
@@ -189,14 +192,13 @@ class Basket(object):
             raise ValueError('the name {} is already in use'.format(name))
         return self.shopping_lists
 
-    def check_permission(self, object, link_name):
+    def check_permission(self, object_, link_name):
         """Input: an object with an author field
         a link name containing the name in the url.
         output: return TRue if user with link_name has modification permission"""
-        if object.author != link_name:
+        if object_.author != link_name:
             return False
         return True
-
 
     def get_lists_name_set(self):
         """ Returns a set that contains the names in the current shoppingLists lists"""
@@ -214,7 +216,7 @@ class Basket(object):
                 return False
         return True
 
-    def modify_list(self, name, link_name, new_name=None):
+    def modify_list(self, name, new_name=None, public=None):
         """input: name of list and the arguments to be changed
         output: returns new list"""
         # we can only modify the name of a list, for other attributes see modify_items()
@@ -224,6 +226,8 @@ class Basket(object):
             list_.date_last_modified = datetime.utcnow()
         else:
             raise ValueError("Seems like you already have a list with that name")
+        if public is not None:
+            list_.public = public
         return True
 
     def delete_list(self, name):
@@ -244,19 +248,29 @@ class Basket(object):
         else:
             raise ValueError('Shopping list with the name {} cannot be found'. format(name))
 
-
     def view_list(self, link_name, sort='date_created'):
         """ returns all the list sorted as per 3 list attributes: name, date created, date modified
         """
+        # check that the user exists:
+        if not self.gears.if_user_exists(link_name):
+            raise Exception('No account with the user_name {}'.format(link_name))
+
         # extract the attributes to a temp_list sort them then loop through shopping list
         # while arranging them
 
+        # if a person is logged he should view all his lists irrespective of the public attribute value
         filter_list = []
         if link_name is not None:
             for list_ in self.shopping_lists:
                 self.set_total(list_)
+                # we check that the author of the list is the guy in the link_name
                 if list_.author == link_name:
                     filter_list.append(list_)
+                # if the guys are different then only pick lists that have been made public
+                elif list_.public:
+                    filter_list.append(list_)
+                    # we check that for a logged in user who is not the owner, if we cannot find any lists then we raise
+
         else:
             filter_list = self.shopping_lists
         temp_ = []
@@ -270,28 +284,6 @@ class Basket(object):
                     if attr == list_.date_created:
                         temp_lists.append(list_)
             return temp_lists
-
-        if sort == 'name':
-            for list_ in filter_list:
-                temp_.append(list_.name)
-            temp_.sort()
-            for attr in temp_:
-                for list_ in filter_list:
-                    if attr == list_.name:
-                        temp_lists.append(list_)
-            return temp_lists
-
-        if sort == 'date_last_modified':
-            for list_ in filter_list:
-                temp_.append(list_.date_last_modified)
-            temp_.sort()
-            for attr in temp_:
-                for list_ in filter_list:
-                    if attr == list_.date_last_modified:
-                        temp_lists.append(list_)
-            return temp_lists
-        raise Exception('Unkown sort configuration')
-
 
     def add_item(self,  list_name, item_name, quantity, price, description=None, author=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
@@ -397,16 +389,7 @@ class Basket(object):
 
         list_ = []
         temp_list = []
-        if sort == 'name':
-            for item in item_list:
-                temp_list.append(item.name)
-            temp_list.sort()
-            for name in temp_list:
-                for item in item_list:
-                    if item.name == name:
-                        list_.append(item)
-            shl_list.items = list_
-            return shl_list
+
         if sort == 'date_added':
             for item in item_list:
                 temp_list.append(item.date_added)
@@ -417,37 +400,8 @@ class Basket(object):
                         list_.append(item)
             shl_list.items = list_
             return shl_list
-        if sort == 'date_last_modified':
-            for item in item_list:
-                temp_list.append(item.date_last_modified)
-            temp_list.sort()
-            for date_last_modified in temp_list:
-                for item in item_list:
-                    if item.date_last_modified == date_last_modified:
-                        list_.append(item)
-            shl_list.items = list_
-            return shl_list
-        if sort == 'quantity':
-            for item in item_list:
-                temp_list.append(item.quantity)
-            temp_list.sort()
-            for quantity in temp_list:
-                for item in item_list:
-                    if item.quantity == quantity:
-                        list_.append(item)
-            shl_list.items = list_
-            return shl_list
-        if sort == 'price':
-            for item in item_list:
-                temp_list.append(item.price)
-            temp_list.sort()
-            for price in temp_list:
-                for item in item_list:
-                    if item.price == price:
-                        list_.append(item)
-            shl_list.items = list_
-            return shl_list
-        raise Exception('Unknown sort configuration')
+        return shl_list
+
 
     def set_total(self, list_):
         """
