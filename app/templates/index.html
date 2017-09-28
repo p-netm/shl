@@ -180,8 +180,8 @@
                         {% endif %}
 
                         {% if session['user_id'] == link_name %}
-                        <a href="{{ url_for('shl.view_items',link_name=link_name, list_name=lists[counter].name, _external=True) }}">Add items</a>
-                                                {% endif %}
+                        <a href="{{ url_for('shl.view_items', link_name=link_name, list_name=lists[counter].name, _external=True) }}">Add items</a>
+                        {% endif %}
 
 
                         <!-- delete Modal -->
