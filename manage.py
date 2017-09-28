@@ -1,5 +1,5 @@
 from flask_script import Manager, Shell
-from app.models import User, ShoppingList
+from app.models import User, ShoppingList, Basket
 from app import create_app
 import os
 
