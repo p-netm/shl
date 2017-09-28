@@ -17,10 +17,10 @@ def login():
         user = gear.get_user_by_email(email)
         remember = login_form.rem.data
         passcode = login_form.passcode.data
-        if user and user.check_password(passcode):
+        if user and not user.check_password(user.hashed_pass, passcode):
             logging_in_user = user
             login_user(logging_in_user, remember)
-            return redirect(url_for('shl.index') or request.args.get('next'))
+            return redirect(url_for('shl.index', link_name=session['user_id']) or request.args.get('next'))
         else:
             flash('invalid email or password', 'danger')
     return render_template('login.html', form=login_form)

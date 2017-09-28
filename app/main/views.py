@@ -9,8 +9,8 @@ basket = Basket()
 
 # ROUTES
 @login_required
-@shl.route('/list/', methods=['GET', 'POST'])
-def index():
+@shl.route('/<link_name>/list/', methods=['GET', 'POST'])
+def index(link_name):
     # create list functionality
     add_list_form = AddListForm()
     modify_form = ModifyForm()
@@ -18,30 +18,32 @@ def index():
     if modify_form.validate_on_submit():
         name = modify_form.name.data
         old_name = modify_form.old_name.data
+        public = modify_form.public.data
         try:
-            basket.modify_list(name=old_name, new_name=name)
+            basket.modify_list(name=old_name, new_name=name, public=public)
         except ValueError as error:
             flash(str(error), 'danger')
-        return redirect(url_for('shl.index'))
+        return redirect(url_for('shl.index', link_name=link_name))
 
     if add_list_form.validate_on_submit():
         name = add_list_form.name.data
+        public = modify_form.public.data
         try:
-            basket.create_list(name, author=session['user_id'])
+            basket.create_list(name, author=session['user_id'], public=public)
         except ValueError as error:
             flash(str(error), 'danger')
-            return redirect(url_for('shl.index'))
-        return redirect(url_for('shl.index'))
-
+            return redirect(url_for('shl.index', link_name=link_name))
+        return redirect(url_for('shl.index', link_name=link_name))
 
     try:
         lists = []
-        lists = basket.view_list()  # lists has a list of list objects
+        lists = basket.view_list(link_name=link_name)  # lists has a list of list objects
     except Exception as e:
         flash(str(e), 'danger')
     if not len(lists) and session.get('user_id'):
-        flash("Seems like you currently have no lists, click on the add_list link to get started", 'info')
-    return render_template('index.html', lists=lists, lists_len=len(lists), form=add_list_form, modif_form=modify_form)
+        flash("Seems like {} currently has no lists".format(link_name), 'info')
+    return render_template('index.html', link_name=link_name, lists=lists, lists_len=len(lists), form=add_list_form,
+                           modif_form=modify_form)
 
 
 
@@ -75,9 +77,9 @@ def about():
     return render_template('info/about.html')
 
 
-@shl.route('/list/<list_name>', methods=['GET', 'POST'])
+@shl.route('/<link_name>/list/<list_name>', methods=['GET', 'POST'])
 @login_required
-def view_items(list_name):
+def view_items(link_name, list_name):
     """ Returns the single shopping list view"""
     form = AddItemForm()
     mod_form = ModifyItemForm()
@@ -96,14 +98,14 @@ def view_items(list_name):
             flash(str(error), 'danger')
             return redirect(url_for('shl.view_items', list_name=list_name))
         flash('item modified successfully', 'success')
-        return redirect(url_for('shl.view_items', list_name=list_name))
+        return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
     try:
         shl_list = basket.view_item(list_name=list_name)
     except Exception as e:
         flash(str(e), 'danger')
-        return redirect(url_for('shl.view_items', list_name=list_name))
+        return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
     try:
-        lists = basket.view_list()
+        lists = basket.view_list(link_name=link_name)
     except Exception as e:
         flash(str(e), 'danger')
 
@@ -117,11 +119,11 @@ def view_items(list_name):
             basket.add_item(list_name, item_name, quantity, price, description, author=session['user_id'])
         except ValueError as error:
             flash(str(error), 'danger')
-            return redirect(url_for('shl.view_items', list_name=list_name))
+            return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
         flash('item added successfully', 'success')
-        return redirect(url_for('shl.view_items', list_name=list_name))
+        return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
 
-    return render_template('each_list.html', shl_list=shl_list, lists=lists,
+    return render_template('each_list.html', link_name=link_name, shl_list=shl_list, lists=lists,
                            form=form, mod_form=mod_form, name=list_name)
 
 
@@ -134,16 +136,16 @@ def edit_list():
     return redirect(url_for('shl.view_items'))
 
 
-@shl.route('/list/<list_name>/<item_name>')
+@shl.route('<link_name>/list/<list_name>/<item_name>')
 @login_required
-def delete_item(list_name, item_name):
+def delete_item(link_name, list_name, item_name):
     """ Extract the two names: list name and item_name
     delete the specified item"""
     try:
         basket.delete_item(item_name=item_name, list_name=list_name)
     except ValueError as error:
         flash(str(error), 'danger')
-    return redirect(url_for('shl.view_items', list_name=list_name))
+    return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
 
 @shl.route('/terms')
 def terms():
