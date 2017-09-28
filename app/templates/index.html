@@ -114,12 +114,49 @@
                     {% if session['user_id'] == link_name %}
                     <div class="panel-footer text-center">
                         <a data-toggle="modal" data-target="#del{{counter}}"><span
-                                class="glyphicon glyphicon-trash">delete</span></a>
+                                class="glyphicon glyphicon-trash pointer">delete</span></a>
+                        &nbsp;&nbsp;
+                        <a data-toggle="modal" data-target="#tok{{counter}}"><span
+                                class="glyphicon glyphicon-eye-open pointer">share</span></a>
                         &nbsp;&nbsp;
                     {% else %}
                     <div class="panel-footer text-center">
                         <a href="{{ url_for('shl.view_items',link_name=link_name, list_name=lists[counter].name, _external=True) }}">View items</a>
                     {% endif %}
+
+
+                    <!-- share Modal -->
+                        <div id="tok{{counter}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Your share Link</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <span class=""> {{ url_for('shl.share', token=lists[counter].name, _external=true) }}</span>
+                                    </div>
+                                    <div class="modal-footer text-center">
+                                        <button type="button" class="btn btn-info" data-dismiss="modal">Back
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
                         <!-- delete Modal -->
