@@ -15,13 +15,12 @@ def index(link_name):
     add_list_form = AddListForm()
     modify_form = ModifyForm()
 
-
     if modify_form.validate_on_submit():
         name = modify_form.name.data
         old_name = modify_form.old_name.data
         public = modify_form.public.data
         try:
-            basket.modify_list(name=old_name, new_name=name, public=public)
+            basket.modify_list(name=old_name, link_name=link_name, new_name=name, public=public)
         except ValueError as error:
             flash(str(error), 'danger')
         return redirect(url_for('shl.index', link_name=link_name))
@@ -55,16 +54,16 @@ def home():
     return render_template('info/landing_page.html')
 
 
-@shl.route('/delete_list/<name>')
+@shl.route('/<link_name>/delete_list/<name>')
 @login_required
-def delete_list(name):
+def delete_list(link_name, name):
     """Here we will not use a form but rather a dynamic url that offers a parameter that
     we can use to identify a list-> like say the name of the list"""
     try:
-        basket.delete_list(name)
+        basket.delete_list(link_name, name)
     except ValueError as error:
         flash(str(error), 'danger')
-    return redirect(url_for('shl.index'))
+    return redirect(url_for('shl.index', link_name=session['user_id']))
 
 
 @shl.route('/contact')
@@ -94,7 +93,7 @@ def view_items(link_name, list_name):
         price = mod_form.price.data
         description = mod_form.description.data
         try:
-            basket.modify_item(item_name=old_item_name, list_name=list_name, name=item_name, price=price,
+            basket.modify_item(item_name=old_item_name, link_name=link_name, list_name=list_name, name=item_name, price=price,
                            description=description, quantity=quantity)
         except Exception as error:
             flash(str(error), 'danger')
@@ -102,7 +101,7 @@ def view_items(link_name, list_name):
         flash('item modified successfully', 'success')
         return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
     try:
-        shl_list = basket.view_item(list_name=list_name)
+        shl_list = basket.view_item(link_name=link_name, list_name=list_name)
     except Exception as e:
         flash(str(e), 'danger')
         return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
@@ -118,7 +117,7 @@ def view_items(link_name, list_name):
         price = form.price.data
         description = form.description.data
         try:
-            basket.add_item(list_name, item_name, quantity, price, description, author=session['user_id'])
+            basket.add_item(link_name, list_name, item_name, quantity, price, description, author=session['user_id'])
         except ValueError as error:
             flash(str(error), 'danger')
             return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
@@ -144,7 +143,7 @@ def delete_item(link_name, list_name, item_name):
     """ Extract the two names: list name and item_name
     delete the specified item"""
     try:
-        basket.delete_item(item_name=item_name, list_name=list_name)
+        basket.delete_item(link_name=link_name, item_name=item_name, list_name=list_name)
     except ValueError as error:
         flash(str(error), 'danger')
     return redirect(url_for('shl.view_items', link_name=link_name, list_name=list_name))
@@ -155,10 +154,10 @@ def terms():
     return render_template('info/terms.html')
 
 
-@shl.route('/share')
-def share():
+@shl.route('/<link_name>/share')
+def share(link_name):
     token = request.args.get('token')
     list_name = basket.decodes_token(token=token)
-    list_ = basket.get_list_by_name(list_name)
-    return render_template('info/share.html', shl_list=list_)
+    list_ = basket.get_list_by_name(list_name, link_name)
+    return render_template('info/share.html', link_name=link_name, shl_list=list_)
 
