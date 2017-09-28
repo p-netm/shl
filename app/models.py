@@ -1,8 +1,6 @@
-from werkzeug.security import check_password_hash, generate_password_hash
 from . import login_manager
 from flask_login import UserMixin
 import re
-from itsdangerous import URLSafeSerializer as Serialize
 from _datetime import datetime
 
 
@@ -31,19 +29,14 @@ class User(UserMixin, object):
         """ raises an attribute error for the format: User.password"""
         raise AttributeError('Password has no read permissions')
 
-    @password.setter
-    def password(self, pass_word):
-        """uses werkzeug hashing functions to hash the password """
-        # self.hashed_pass = generate_password_hash(pass_word)
-        pass
 
     def set_password(self, pass_word):
-        """ generates an encrypted hash key from a users password"""
-        self.hashed_pass = generate_password_hash(pass_word)
+        """ assigns a password to the user"""
+        self.hashed_pass = pass_word
 
     def check_password(self, pass_word, hashed_pass):
-        """ returns True if fed in password, has the same hash as the users password else False"""
-        return check_password_hash(hashed_pass, pass_word)
+        """ returns True if fed in password, has the same pass as the users password else False"""
+        return hashed_pass == pass_word
 
 
 class ShoppingList(object):
@@ -187,9 +180,9 @@ class Basket(object):
             raise ValueError('A list name can only contain alpha numeric characters')
         # we cant force a format style on users, but yet they should not be able to add lists with the same name
         name = name.strip()
-        if self.name_checker(name):
+        if self.name_checker(author, name):
             self.shopping_lists.append(list_obj)
-            self.get_lists_name_set()
+            self.get_lists_name_set(author)
         else:
             raise ValueError('the name {} is already in use'.format(name))
         return self.shopping_lists
@@ -202,28 +195,29 @@ class Basket(object):
             return False
         return True
 
-    def get_lists_name_set(self):
+    def get_lists_name_set(self, link_name):
         """ Returns a set that contains the names in the current shoppingLists lists"""
         set_ = set()
         for list in self.shopping_lists:
-            set_.add(list.name)
+            if list.author == link_name:
+                set_.add(list.name)
         return set_
 
-    def name_checker(self, name):
+    def name_checker(self, link_name, name):
         """input: list_name
         returns true if the name is not already being used for another list else False"""
-        names_set = self.get_lists_name_set()
+        names_set = self.get_lists_name_set(link_name)
         for name_ in names_set:
             if name_.capitalize() == name.capitalize():
                 return False
         return True
 
-    def modify_list(self, name, new_name=None, public=None):
+    def modify_list(self, name, link_name, new_name=None, public=None):
         """input: name of list and the arguments to be changed
         output: returns new list"""
         # we can only modify the name of a list, for other attributes see modify_items()
-        list_ = self.get_list_by_name(name)
-        if new_name and self.name_checker(new_name):
+        list_ = self.get_list_by_name(name, link_name)
+        if new_name and self.name_checker(link_name, new_name):
             list_.name = new_name
             list_.date_last_modified = datetime.utcnow()
         else:
@@ -232,20 +226,20 @@ class Basket(object):
             list_.public = public
         return True
 
-    def delete_list(self, name):
+    def delete_list(self, link_name, name):
         """ input: name of list: retrieves list object with the fed in name and pop it
         from the system then return updated shopping_lists"""
-        list_obj = self.get_list_by_name(name)
+        list_obj = self.get_list_by_name(name, link_name)
         self.shopping_lists.pop(self.shopping_lists.index(list_obj))
         return self.shopping_lists
 
-    def get_list_by_name(self, name):
+    def get_list_by_name(self, name, link_name):
         """input: a list's name; returns the list object with the given name"""
-        if not self.name_checker(name):
+        if not self.name_checker(link_name, name):
             # return list_object ->  conundrum due to arbitrary use of different cases when a user feels like it
             # we will check a capitalized copy of the name against capitalized versions of the lists names
             for list_obj in self.shopping_lists:
-                if name.capitalize() == list_obj.name.capitalize():
+                if name.capitalize() == list_obj.name.capitalize() and list_obj.author == link_name:
                     return list_obj
         else:
             raise ValueError('Shopping list with the name {} cannot be found'. format(name))
@@ -287,7 +281,7 @@ class Basket(object):
                         temp_lists.append(list_)
             return temp_lists
 
-    def add_item(self,  list_name, item_name, quantity, price, description=None, author=None):
+    def add_item(self,  link_name, list_name, item_name, quantity, price, description=None, author=None):
         """input: list_name, item name after which it calls the Item constructor, with appropriate details
         and then adds the created item object to a list object with the fed in list_name
         output: the updated list"""
@@ -301,7 +295,7 @@ class Basket(object):
             price = float(price)
         else:
             raise ValueError('Price, wrong input type')
-        list_ = self.get_list_by_name(list_name)
+        list_ = self.get_list_by_name(list_name, link_name)
         # need to make sure no other item with same name in list
         item_name_set = set()
         for item in list_.items:
@@ -325,14 +319,14 @@ class Basket(object):
         number = numbers_list[0]
         return float(number)
 
-    def modify_item(self, item_name, list_name, name=None, price=None, description=None, quantity=None):
+    def modify_item(self, link_name, item_name, list_name, name=None, price=None, description=None, quantity=None):
         """ input: specified parameters
         output: the updated list object"""
         # we can only modify name, price, description, quantity
-        item = self.get_item_by_name(item_name=item_name, list_name=list_name)
+        item = self.get_item_by_name(link_name=link_name, item_name=item_name, list_name=list_name)
         if item:
             # also check that the items name is not already with another item
-            if name and self.item_name_checker(item_name=name, list_name=list_name):
+            if name and self.item_name_checker(link_name=link_name, item_name=name, list_name=list_name):
                 item.name = name
             if price:
                 item.price = price
@@ -341,37 +335,37 @@ class Basket(object):
             if quantity:
                 item.quantity = quantity
             item.date_last_modified = datetime.utcnow()
-            list_ = self.get_list_by_name(list_name)
+            list_ = self.get_list_by_name(list_name, link_name)
             list_.date_last_modified = datetime.utcnow()
             list_.total = self.set_total(list_).total
         else:
             raise Exception('Item {} was not found in the {} list'.format(item_name, list_name))
 
-    def item_name_checker(self, item_name, list_name):
+    def item_name_checker(self, link_name, item_name, list_name):
         """ Checks if the item_name is already a name of an item in the given list
         input: item_name, and list_name
         output: returns True if item_name is not in lits_name.items.names"""
-        list_ = self.get_list_by_name(list_name)
+        list_ = self.get_list_by_name(list_name, link_name)
         for item in list_.items:
             if item.name == item_name:
                 return False
         return True
 
-    def get_item_by_name(self, item_name, list_name):
+    def get_item_by_name(self, link_name, item_name, list_name):
         """" input: a list name and an item name
         output: the item whose name is specified -> and that belongs to the list with the name that has been parsed"""
-        list_ = self.get_list_by_name(list_name)
+        list_ = self.get_list_by_name(list_name, link_name)
         for item in list_.items:
             if item.name == item_name:
                 return item
         return False
 
-    def delete_item(self, item_name, list_name):
+    def delete_item(self, link_name, item_name, list_name):
         """retrieves the list, retrieves the item from the list and then pops the item
         output: the updated list object"""
         # check if list exists
         # check if item exists the pop the item from the list
-        list_ = self.get_list_by_name(list_name)
+        list_ = self.get_list_by_name(list_name, link_name=link_name)
         item_obj = None
         for item in list_.items:
             if item.name == item_name:
@@ -382,11 +376,11 @@ class Basket(object):
 
         return list_
 
-    def view_item(self, list_name, sort='date_added'):
+    def view_item(self, link_name, list_name, sort='date_added'):
         """ retrieves returns the list items of the specified list while sorted """
         # get lis; get items list from the list; sort the items return list
         # items can only be sorted by their name, date_added, date modified, quantity and price
-        shl_list = self.get_list_by_name(list_name)
+        shl_list = self.get_list_by_name(list_name, link_name)
         item_list = shl_list.items
 
         list_ = []
@@ -421,13 +415,9 @@ class Basket(object):
         return list_
 
     def generate_token(self, list_name):
-
-            # means that we are generating a token
-        s = Serialize('asadf crtvad acf')
-        token = s.dumps(list_name)
-        return token
+        # means that we are generating a token ******************
+        return list_name
 
     def decodes_token(self, token):
-        name_of_list = token.loads()
-        # we retrieve the list name serialized in the tken and return it
-        return name_of_list
+        # we retrieve the list name serialized in the token and return it
+        return token
