@@ -15,8 +15,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <!-- My custom css file-->
-    <!--link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css') }}"-->
-    <link rel="stylesheet" href="../static/style/css/shl.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/css/shl.css', _external=True) }}">
 </head>
 <body>
 
@@ -30,13 +29,15 @@
                 <span class="icon-bar"></span>
             </button>
             <!--/review -->
-            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
+            <a class="navbar-brand" href="{{ url_for('shl.index', link_name=link_name) }}">SHOPPING LIST.COM</a>
         </div>
         <div class="nav-flex">
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
+                    {% if link_name == session['user_id'] %}
                     <li><a data-toggle="modal" data-target="#myModal" href="#">
                         <span class="glyphicon glyphicon-plus"></span>add_item</a></li>
+                    {% endif %}
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-user"></span> Account
                         <span class="caret"></span></a>
@@ -72,9 +73,10 @@
     {% endwith %}
     <div class="container bars row">
         <div class="my_list_side_bar col-lg-3 col-md-3 col-sm-0 col-xs-0">
+            {% if link_name == session['user_id'] %}
             <h3> My lists</h3>
             {% for list in lists %}
-            <a class="a-panel" href="{{ url_for('shl.view_items', list_name=list.name) }}">
+            <a class="a-panel" href="{{ url_for('shl.view_items',link_name=link_name, list_name=list.name) }}">
                 <div class="panel">
                     <h4>{{ list.name }}</h4>
 
@@ -82,6 +84,7 @@
                 </div>
             </a>
             {% endfor %}
+            {% endif %}
 
         </div>
 
@@ -113,10 +116,12 @@
                         <td> {{ shl_list.items[counter].price }}</td>
                         <td> {{ shl_list.items[counter].description }}</td>
                         <td> {{ shl_list.items[counter].amount }}</td>
+                        {% if link_name == session['user_id'] %}
                         <td><a class="pointer" href="#" data-toggle="modal" data-target="#deleteItemModal"><span
                                 class="glyphicon glyphicon-trash"></span> delete </a></td>
                         <td><a class="pointer" href="#" data-toggle="modal" data-target="#modifyItemModal{{counter}}"><span
                                 class="glyphicon glyphicon-pencil"></span> edit </a></td>
+                        {% endif %}
 
 
                         <!-- Modal -->
@@ -131,7 +136,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <form class="" method="POST"
-                                              action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
+                                              action="{{ url_for('shl.view_items', link_name=link_name, list_name=name, _external=True) }}">
                                             <div class="input-group">
                                                 {{ mod_form.csrf_token }}
 
@@ -162,7 +167,7 @@
                                         </form>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Return
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">back
                                         </button>
                                     </div>
                                 </div>
@@ -182,7 +187,7 @@
                                         <h4 class="modal-title">Confirm Item Deletion</h4>
                                     </div>
                                     <div class="modal-body text-center">
-                                        <a href="{{ url_for('shl.delete_item', list_name=name,
+                                        <a href="{{ url_for('shl.delete_item',link_name=link_name, list_name=name,
                                  item_name=shl_list.items[counter].name, _external=True) }}" class="btn btn-default">
                                             <span class="glyphicon glyphicon-trash">delete</span></a>
                                     </div>
@@ -206,11 +211,13 @@
 
             </div>
             <div class="text-center">
+                {% if link_name == session['user_id'] %}
                 <a href="{{ url_for('shl.delete_list', name=shl_list.name, _external=True) }}" class="btn btn-default">
                     DELETE LIST </a> &nbsp;&nbsp;&nbsp;
+                {% endif %}
 
-                <a href="{{ url_for('shl.index', _external=True) }}" class="btn btn-info">
-                    BACK </a
+                <a href="{{ url_for('shl.index', link_name=link_name, _external=True) }}" class="btn btn-info">
+                    BACK </a>
             </div>
         </div>
 
@@ -229,7 +236,8 @@
                 <h4 class="modal-title">Add Item Modal</h4>
             </div>
             <div class="modal-body">
-                <form class="" method="POST" action="{{ url_for('shl.view_items', list_name=name, _external=True) }}">
+                <form class="" method="POST" action="{{ url_for('shl.view_items', link_name=link_name,
+                 list_name=name, _external=True) }}">
                     <div class="input-group">
                         {{ form.csrf_token }}
                         {{ form.list_name(class='form-control hidden', value=name) }}
