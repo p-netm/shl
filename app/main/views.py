@@ -158,6 +158,9 @@ def terms():
 def share(link_name):
     token = request.args.get('token')
     list_name = basket.decodes_token(token=token)
-    list_ = basket.get_list_by_name(list_name, link_name)
+    try:
+        list_ = basket.get_list_by_name(list_name, link_name)
+    except ValueError as e:
+        flash(str(e), 'danger')
     return render_template('info/share.html', link_name=link_name, shl_list=list_)
 
