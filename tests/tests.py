@@ -240,6 +240,12 @@ class ItemTest(unittest.TestCase):
         basket.add_item('Peter', 'list1', 'peach', '7', 25.00, 'succulent')
         basket.add_item('Peter', 'list1', 'passion', '16', 25.00, 'succulent')
 
+        list_ = basket.get_list_by_name('list1', 'Peter')
+        item_names = []
+        for item in list_.items:
+            item_names.append(item.name)
+        self.assertListEqual(item_names, ['oranges', 'mangoes', 'apples', 'peach', 'passion'])
+
 
 class GearsTests(unittest.TestCase):
     """all things user related"""
@@ -276,3 +282,18 @@ class GearsTests(unittest.TestCase):
 
         user = gear.get_user_by_email('asbdahjsd')
         self.assertIsNone(user)
+
+    def test_extract_number_from_quantity(self):
+        basket = Basket()
+        number = basket.extract_number_from_quantity('2kgs')
+        self.assertTrue(type(number) == float)
+        self.assertEqual(number, 2.0)
+
+    def test_checking_permission(self):
+        """"sees to it that an owner is granted permissions to his lists"""
+        basket = Basket()
+        basket.create_list('list1', 'Peter', 'faedas')
+        obj = basket.get_list_by_name('list1', 'Peter')
+        boolean = basket.check_permission(obj, 'Peter')
+        self.assertTrue(boolean)
+        self.assertFalse(basket.check_permission(obj, 'Peterasd'))
