@@ -220,10 +220,13 @@ class Basket(object):
         if new_name and self.name_checker(link_name, new_name):
             list_.name = new_name
             list_.date_last_modified = datetime.utcnow()
+        elif public is not None:
+            list_.public = public
+            list_.date_last_modified = datetime.utcnow()
         else:
             raise ValueError("Seems like you already have a list with that name")
-        if public is not None:
-            list_.public = public
+
+
         return True
 
     def delete_list(self, link_name, name):
