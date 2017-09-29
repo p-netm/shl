@@ -205,7 +205,11 @@
                                                 {{ modif_form.name(class='form-control', placeholder=
                                                 lists[counter].name) }}
                                                 <div>
-                                                {{ modif_form.public(checked=lists[counter].public) }} {{ modif_form.public.label }}
+                                                {% if lists[counter].public %}
+                                                {{ modif_form.public() }} {{ modif_form.public.label }}
+                                                {% else %}
+                                                {{ modif_form.public() }}{{ modif_form.public.label }}
+                                                {% endif %}
                                                 </div>
                                                 <div class="">
                                                     {{ modif_form.add(class='btn btn-default') }}
