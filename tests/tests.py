@@ -59,7 +59,7 @@ class ShoppingListTests(unittest.TestCase):
         basket.create_list('1', 'Peter', 'faedddas')
         basket.create_list('2', 'Peter', 'faedddas')
         basket.create_list('3', 'Peter', 'faedsdas')
-        new_shopping_lists = basket.delete_list('Peter','2')
+        new_shopping_lists = basket.delete_list('Peter', '2')
         current_value = len(basket.shopping_lists)
         self.assertTrue(current_value, 2)
         # create a list of the shopping_lists names and confirm the deleted list's name
@@ -96,7 +96,7 @@ class ShoppingListTests(unittest.TestCase):
         basket.create_list('1', 'Peter', 'faedas')
         basket.create_list('6', 'Peter', 'faedas')
         basket.create_list('2', 'Peter', 'faedas')
-        basket.create_list('5', 'Peter', 'faedas')
+        basket.create_list('5', 'Peter', 'faedas', public=False)
         basket.create_list('3', 'Peter', 'faedas')
 
         basket.modify_list(name='1', link_name='Peter', new_name='one')
@@ -106,7 +106,10 @@ class ShoppingListTests(unittest.TestCase):
         self.assertNotIn('1', lists_names)
         self.assertIn('one', lists_names)
         self.assertEqual(len(basket.shopping_lists), 5, msg=" the number of list should not change")
-
+        list_ = basket.get_list_by_name('6', 'Peter')
+        print(list_.name)
+        basket.modify_list(name='6', link_name='Peter', new_name='6', public=True)
+        self.assertTrue(list_.public)
 
     def test_basket_support_methods(self):
         """tests the methods that are called within the main class methods
@@ -193,7 +196,7 @@ class ItemTest(unittest.TestCase):
         basket = Basket()
         basket.create_list('list1', 'Peter', 'faedas')
         basket.add_item('Peter', 'list1', 'oranges', '20', 25.00, 'succulent')
-        #check modification time changes
+        # check modification time changes
         item_obj = basket.shopping_lists[0].items[0]
         init_mod_time = item_obj.date_last_modified
         basket.modify_item('Peter', 'oranges', 'list1', name='Bananas')
