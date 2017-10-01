@@ -92,7 +92,6 @@ def view_items(link_name, list_name):
         quantity = mod_form.quantity.data
         price = mod_form.price.data
         description = mod_form.description.data
-        public = mod_form.public.data
         try:
             basket.modify_item(item_name=old_item_name, link_name=link_name, list_name=list_name, name=item_name, price=price,
                            description=description, quantity=quantity)
