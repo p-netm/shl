@@ -1,18 +1,20 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, FloatField
+from wtforms import SubmitField, StringField, FloatField, BooleanField
 from wtforms.validators import DataRequired, input_required
 
 
 class AddListForm(FlaskForm):
     """ Used to model the registration form"""
     name = StringField('', validators=[input_required(), DataRequired()])
-    add = SubmitField('add_list')
+    public = BooleanField('Make me public')
+    add = SubmitField('add list')
 
 
 class ModifyForm(FlaskForm):
     """ Used to model the registration form"""
     name = StringField('', validators=[input_required(), DataRequired()])
     old_name = StringField('', validators=[input_required(), DataRequired()])
+    public = BooleanField('Make me public')
     add = SubmitField('modify_list')
 
 

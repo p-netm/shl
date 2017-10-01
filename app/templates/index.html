@@ -29,7 +29,11 @@
                 <span class="icon-bar"></span>
             </button>
             <!--/review -->
-            <a class="navbar-brand" href="{{ url_for('shl.index') }}">SHOPPING LIST.COM</a>
+            {% if current_user.is_authenticated %}
+            <a class="navbar-brand" href="{{ url_for('shl.index', link_name=session['user_id']) }}">SHOPPIN LIST.COM</a>
+            {% else %}
+            <a class="navbar-brand" href="{{ url_for('shl.home') }}">SHOPPING LIST.COM</a>
+            {% endif %}
         </div>
         <div class="nav-flex">
 
@@ -93,10 +97,10 @@
                 <!-- clickable cards-> remove the text decoration from text in panels-->
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}">{{
+                        <a href="{{ url_for('shl.view_items',link_name=link_name, list_name=lists[counter].name, _external=True) }}">{{
                             lists[counter].name }}</a>
                     </div>
-                    <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}"
+                    <a href="{{ url_for('shl.view_items',link_name=link_name, list_name=lists[counter].name, _external=True) }}"
                        class="unlink">
                         <div class="panel-body">
                             <h5> date_created <span class="list_details">{{ moment(lists[counter].date_created).format('LLL') }} </span>
@@ -107,11 +111,42 @@
                             </h5>
                         </div>
                     </a>
-
+                    {% if session['user_id'] == link_name %}
                     <div class="panel-footer text-center">
                         <a data-toggle="modal" data-target="#del{{counter}}"><span
-                                class="glyphicon glyphicon-trash">delete</span></a>
+                                class="glyphicon glyphicon-trash pointer">delete</span></a>
                         &nbsp;&nbsp;
+                        <a data-toggle="modal" data-target="#tok{{counter}}"><span
+                                class="glyphicon glyphicon-eye-open pointer">share</span></a>
+                        &nbsp;&nbsp;
+                    {% else %}
+                    <div class="panel-footer text-center">
+                        <a href="{{ url_for('shl.view_items',link_name=link_name, list_name=lists[counter].name, _external=True) }}">View items</a>
+                    {% endif %}
+
+
+                    <!-- share Modal -->
+                        <div id="tok{{counter}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Your share Link</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <span class=""> {{ url_for('shl.share',link_name=link_name, token=lists[counter].name, _external=true) }}</span>
+                                    </div>
+                                    <div class="modal-footer text-center">
+                                        <button type="button" class="btn btn-info" data-dismiss="modal">Back
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
 
 
                         <!-- delete Modal -->
@@ -125,7 +160,7 @@
                                         <h4 class="modal-title">Confirm delete action</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <a href="{{ url_for('shl.delete_list', name=lists[counter].name, _external=True) }}"
+                                        <a href="{{ url_for('shl.delete_list', link_name=link_name, name=lists[counter].name, _external=True) }}"
                                            class="btn btn-default">
                                             <span class="glyphicon glyphicon-trash">delete</span></a>
                                     </div>
@@ -138,11 +173,15 @@
                             </div>
                         </div>
 
+                        {% if session['user_id'] == link_name %}
                         <a data-toggle="modal" data-target="#{{counter}}"><span
                                 class="glyphicon glyphicon-pencil">edit</span></a>
                                 &nbsp;&nbsp;&nbsp;
+                        {% endif %}
 
-                        <a href="{{ url_for('shl.view_items', list_name=lists[counter].name, _external=True) }}">Add items</a>
+                        {% if session['user_id'] == link_name %}
+                        <a href="{{ url_for('shl.view_items', link_name=link_name, list_name=lists[counter].name, _external=True) }}">Add items</a>
+                        {% endif %}
 
 
                         <!-- delete Modal -->
@@ -157,18 +196,23 @@
                                     </div>
                                     <div class="modal-body">
                                         <form class="from-inline" method="POST"
-                                              action="{{  url_for('shl.index', _external=True) }}">
+                                              action="{{  url_for('shl.index', link_name=link_name, _external=True) }}">
                                             {{ modif_form.csrf_token }}
                                             {{ modif_form.old_name(class='form-control hidden',
                                             value=lists[counter].name )}}
-                                            <div class="input-group">
+                                            <div class="">
 
                                                 {{ modif_form.name(class='form-control', placeholder=
                                                 lists[counter].name) }}
-
-                                                <div class="input-group-btn">
+                                                <div>
+                                                {% if lists[counter].public %}
+                                                {{ modif_form.public() }} {{ modif_form.public.label }}
+                                                {% else %}
+                                                {{ modif_form.public() }}{{ modif_form.public.label }}
+                                                {% endif %}
+                                                </div>
+                                                <div class="">
                                                     {{ modif_form.add(class='btn btn-default') }}
-
                                                 </div>
                                             </div>
                                         </form>
@@ -208,12 +252,16 @@
                 <h4 class="modal-title">Create a list name</h4>
             </div>
             <div class="modal-body">
-                <form class="from-inline" method="POST" action="{{ url_for('shl.index', _external=True) }}">
-                    <div class="input-group">
+                <form class="" method="POST" action="{{ url_for('shl.index', link_name=link_name, _external=True) }}">
+                    <div class="">
                         {{ form.csrf_token }}
                         {{ form.name(class='form-control', placeholder= 'list-name') }}
 
-                        <div class="input-group-btn">
+
+                        <div>
+                        {{ form.public(value=False) }} {{ form.public.label }}
+                        </div>
+                        <div class="">
                             {{ form.add(class='btn btn-default') }}
 
                         </div>
@@ -221,7 +269,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Return</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Back</button>
             </div>
         </div>
 

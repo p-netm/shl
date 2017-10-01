@@ -31,12 +31,11 @@
     1. Flask
     2. Flask-wtf
     3. flask-login
-    4. Flask-Mail
-    5. Flask-Migrate
-    6. Flask-Moment
-    7. Flask-Script
+    4. Flask-Moment
+    5. Flask-Script
+  
 
-### pocess:
+### process:
  * Download python version 3.4.3 or above and install and make sure you have git installed too
  * open command line; install virtualEnv
      > pip install VirtualEnv
@@ -46,24 +45,30 @@
      > VirtualEnv <venv-name>
  * install all the dependencies
      > pip install -r requirements.txt
+ * Testing:
+     > nosetests
      
 ### Configurations
 #### configuration variables
 
-    ```
+    
         format on windows:
         set KEY=<value>
         on unix:
         export KEY=<value>
-    ````
+    
     key                 value-options
     ----                ------
     SECRET_KEY          <surprise me>
-    CONFIGURATION       {'development', 'production', 'testing'}
+    CONFIGURATION       {'development', 'production', 'testing', 'default'='development'}
     
 ### Deploy
 
     > Python manage.py runserver
+        * Restarting with stat
+        * Debugger is active!
+        * Debugger PIN: ###-###-###
+        * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
     
 ## USE and FEATURES
 ***
@@ -75,17 +80,21 @@
 
 ##### add new list
 > Enables user to add a new list with a unique name each time
+![add_list](https://user-images.githubusercontent.com/28119869/30997075-f9a43e18-a4cd-11e7-99bb-5edd8a63c6cd.png)
+![add_list modal](https://user-images.githubusercontent.com/28119869/30997074-f6302d96-a4cd-11e7-9526-0d3eb919d5e9.png)
 
 ##### add a new item 
 > A user can add an item to an active list: the add_item link is on the navigation and pops up the modal shown below
+![add item modal](https://user-images.githubusercontent.com/28119869/30997192-b929c35c-a4ce-11e7-87e2-6cd4b0a0abaf.png)
 
 ##### Modification
-> a User can modify each and every aspect of a shopping list and item
+> a User can modify each and every aspect of a shopping list or an item. such fields are however limited to all that require user input
 
 ### Viewing Public ShoppingLists
  ***
  Given that a user may know the user_name of another user. Hir can create a url that displays the second
  users shopping lists. However the first user cannot edit or delete these or any other lists that they do not own(create)
+ ![2017-09-29 04_21_08-shopping-list com home](https://user-images.githubusercontent.com/28119869/30997076-fd623d2a-a4cd-11e7-9a53-094587a5692d.png)
  
 ### Aknowledgements
 All of this would have never been possible without the support of my two LFAs Boswell and Dennis, they were instrumental in
@@ -96,4 +105,4 @@ providing very useful feedback and help. Special thanks goes to my team
     * Leo
     * Abdul
     * and me
-who always reminded and showed me what truecollaboration means and feels like.
+who always reminded and showed me what true collaboration means and feels like.
